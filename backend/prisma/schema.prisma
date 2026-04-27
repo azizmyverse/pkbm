@@ -73,18 +73,20 @@ enum TargetAnnouncement {
 
 /// Pengguna sistem (Admin, Guru, dan Siswa). Profil tambahan disimpan di model Guru/Siswa.
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  password     String
-  role         Role
-  avatar       String?
-  phone        String?
-  address      String?
-  isActive     Boolean  @default(true)
-  refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            Role
+  avatar          String?
+  phone           String?
+  address         String?
+  isActive        Boolean   @default(true)
+  refreshToken    String?
+  resetOTP        String?
+  resetOTPExpiry  DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   guru         Guru?
   siswa        Siswa?
@@ -157,12 +159,13 @@ model Siswa {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  paket        Paket          @relation(fields: [paketId], references: [id], onDelete: Cascade)
-  kelasAnggota KelasAnggota[]
-  pengumpulan  Pengumpulan[]
-  presensi     Presensi[]
-  nilai        Nilai[]
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paket          Paket            @relation(fields: [paketId], references: [id], onDelete: Cascade)
+  kelasAnggota   KelasAnggota[]
+  pengumpulan    Pengumpulan[]
+  presensi       Presensi[]
+  nilai          Nilai[]
+  materiProgress MateriProgress[]
 
   @@index([userId])
   @@index([paketId])
@@ -233,13 +236,33 @@ model Materi {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  kelas Kelas @relation(fields: [kelasId], references: [id], onDelete: Cascade)
-  guru  Guru  @relation(fields: [guruId], references: [id], onDelete: Cascade)
+  kelas    Kelas            @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  guru     Guru             @relation(fields: [guruId], references: [id], onDelete: Cascade)
+  progress MateriProgress[]
 
   @@index([kelasId])
   @@index([guruId])
   @@index([tipe])
   @@index([isPublished])
+}
+
+/// Catatan progres siswa pada sebuah materi (selesai / akses terakhir).
+model MateriProgress {
+  id         String   @id @default(cuid())
+  materiId   String
+  siswaId    String
+  selesai    Boolean  @default(false)
+  lastAccess DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  materi Materi @relation(fields: [materiId], references: [id], onDelete: Cascade)
+  siswa  Siswa  @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@unique([materiId, siswaId])
+  @@index([materiId])
+  @@index([siswaId])
+  @@index([selesai])
 }
 
 /// Tugas yang diberikan guru kepada siswa di sebuah kelas.
