@@ -31,9 +31,11 @@ backend/prisma/migrations/dev.db*
 backend/uploads/avatars/*
 backend/uploads/materi/*
 backend/uploads/tugas/*
+backend/uploads/misc/*
 !backend/uploads/avatars/.gitkeep
 !backend/uploads/materi/.gitkeep
 !backend/uploads/tugas/.gitkeep
+!backend/uploads/misc/.gitkeep
 
 # IDE / OS
 .vscode/
