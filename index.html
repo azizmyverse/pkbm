@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DONGLOT — TikTok Downloader Tanpa Watermark</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700;900&display=swap');
+
+    /* ═══════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ═══════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 10, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    .navbar.scrolled {
+      border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #ffffff;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #7c3aed;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #a855f7;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #ffffff;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ═══════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated gradient blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.35;
+      animation: blobMove 12s ease-in-out infinite alternate;
+    }
+
+    .blob-1 {
+      width: 500px;
+      height: 500px;
+      background: #7c3aed;
+      top: -100px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 400px;
+      height: 400px;
+      background: #a855f7;
+      bottom: -50px;
+      right: -100px;
+      animation-delay: -4s;
+    }
+
+    .blob-3 {
+      width: 300px;
+      height: 300px;
+      background: #c084fc;
+      top: 40%;
+      left: 50%;
+      animation-delay: -8s;
+    }
+
+    @keyframes blobMove {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(60px, -40px) scale(1.15);
+      }
+      66% {
+        transform: translate(-40px, 60px) scale(0.9);
+      }
+      100% {
+        transform: translate(30px, 30px) scale(1.05);
+      }
+    }
+
+    /* Particle dots */
+    .particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(168, 85, 247, 0.5);
+      border-radius: 50%;
+      animation: particleFloat linear infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; top: 20%; animation-duration: 8s; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 25%; top: 60%; animation-duration: 10s; animation-delay: -2s; }
+    .particle:nth-child(3) { left: 40%; top: 30%; animation-duration: 7s; animation-delay: -4s; }
+    .particle:nth-child(4) { left: 55%; top: 70%; animation-duration: 9s; animation-delay: -1s; }
+    .particle:nth-child(5) { left: 70%; top: 15%; animation-duration: 11s; animation-delay: -3s; }
+    .particle:nth-child(6) { left: 85%; top: 50%; animation-duration: 8s; animation-delay: -5s; }
+    .particle:nth-child(7) { left: 15%; top: 80%; animation-duration: 12s; animation-delay: -6s; }
+    .particle:nth-child(8) { left: 60%; top: 45%; animation-duration: 9s; animation-delay: -7s; }
+    .particle:nth-child(9) { left: 90%; top: 85%; animation-duration: 10s; animation-delay: -2s; }
+    .particle:nth-child(10) { left: 35%; top: 90%; animation-duration: 7s; animation-delay: -8s; }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(30px);
+        opacity: 0;
+      }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-style: italic;
+      color: #a0a0a0;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      margin-bottom: 48px;
+    }
+
+    /* Input group */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 18px 50px 18px 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid rgba(124, 58, 237, 0.6);
+      border-radius: 16px;
+      outline: none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .url-input::placeholder {
+      color: #666;
+    }
+
+    .url-input:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.4), 0 0 60px rgba(124, 58, 237, 0.1);
+    }
+
+    .btn-clear {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+      transition: color 0.3s;
+    }
+
+    .btn-clear:hover {
+      color: #a855f7;
+    }
+
+    .btn-clear.show {
+      display: block;
+    }
+
+    .error-msg {
+      color: #ef4444;
+      font-size: 0.85rem;
+      min-height: 20px;
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+
+    .error-msg.visible {
+      opacity: 1;
+    }
+
+    .btn-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-download {
+      padding: 16px 40px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      max-width: 400px;
+      min-width: 250px;
+    }
+
+    .btn-download:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(124, 58, 237, 0.5);
+    }
+
+    .btn-download:active {
+      transform: scale(0.98);
+    }
+
+    .btn-copy {
+      padding: 16px 24px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #a855f7;
+      background: rgba(124, 58, 237, 0.1);
+      border: 2px solid rgba(124, 58, 237, 0.4);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .btn-copy:hover {
+      background: rgba(124, 58, 237, 0.2);
+      transform: scale(1.05);
+    }
+
+    .copy-tooltip {
+      position: absolute;
+      top: -36px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #7c3aed;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .copy-tooltip.show {
+      opacity: 1;
+    }
+
+    /* Loading spinner */
+    .spinner-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .spinner-overlay.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(124, 58, 237, 0.2);
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .spinner-text {
+      color: #a0a0a0;
+      font-size: 0.9rem;
+    }
+
+    /* ═══════════════════════════════════
+       RESULT CARD
+    ═══════════════════════════════════ */
+    .result-card {
+      display: none;
+      max-width: 700px;
+      width: 100%;
+      margin: 40px auto 0;
+      background: rgba(17, 17, 17, 0.8);
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-inner {
+      display: flex;
+      gap: 20px;
+      padding: 24px;
+      align-items: center;
+    }
+
+    .result-thumb {
+      width: 140px;
+      height: 200px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      overflow: hidden;
+    }
+
+    .result-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .result-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .result-author {
+      color: #a0a0a0;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .result-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-result {
+      padding: 12px 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .btn-result:hover {
+      transform: scale(1.03);
+    }
+
+    .btn-video {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+    }
+
+    .btn-video:hover {
+      box-shadow: 0 6px 24px rgba(124, 58, 237, 0.4);
+    }
+
+    .btn-audio {
+      background: rgba(124, 58, 237, 0.15);
+      color: #a855f7;
+      border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+
+    .btn-audio:hover {
+      background: rgba(124, 58, 237, 0.25);
+    }
+
+    /* ═══════════════════════════════════
+       FITUR SECTION
+    ═══════════════════════════════════ */
+    .section {
+      padding: 100px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      text-align: center;
+      margin-bottom: 60px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: #111111;
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 20px;
+      padding: 40px 28px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124, 58, 237, 0.6);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .feature-desc {
+      color: #a0a0a0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════
+       CARA PAKAI SECTION
+    ═══════════════════════════════════ */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      counter-reset: step;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 32px 20px;
+    }
+
+    .step-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .step-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .step-desc {
+      color: #a0a0a0;
+      font-size: 0.9rem;
+    }
+
+    /* ═══════════════════════════════════
+       FAQ SECTION
+    ═══════════════════════════════════ */
+    .faq-list {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: #111111;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .faq-item:hover {
+      border-color: rgba(124, 58, 237, 0.4);
+    }
+
+    .faq-question {
+      padding: 20px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-question span {
+      font-size: 1.2rem;
+      transition: transform 0.3s;
+    }
+
+    .faq-item.open .faq-question span {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: #a0a0a0;
+      font-size: 0.9rem;
+      padding: 0 24px;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+      padding: 0 24px 20px;
+    }
+
+    /* ═══════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════ */
+    .footer {
+      background: #050505;
+      border-top: 1px solid rgba(124, 58, 237, 0.2);
+      text-align: center;
+      padding: 32px 20px;
+      color: #a0a0a0;
+      font-size: 0.85rem;
+    }
+
+    .footer span {
+      color: #a855f7;
+    }
+
+    /* ═══════════════════════════════════
+       MOBILE NAV OVERLAY
+    ═══════════════════════════════════ */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+    }
+
+    .mobile-nav.open {
+      display: flex;
+    }
+
+    .mobile-nav a {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #ffffff;
+      transition: color 0.3s;
+    }
+
+    .mobile-nav a:hover {
+      color: #a855f7;
+    }
+
+    /* ═══════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════ */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 14px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .features-grid,
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .result-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .result-thumb {
+        width: 100%;
+        height: 180px;
+      }
+
+      .btn-download {
+        max-width: 100%;
+      }
+
+      .section {
+        padding: 60px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding: 100px 16px 60px;
+      }
+
+      .url-input {
+        padding: 14px 44px 14px 16px;
+        font-size: 0.9rem;
+      }
+
+      .btn-download {
+        padding: 14px 24px;
+        font-size: 0.95rem;
+        min-width: unset;
+        width: 100%;
+      }
+
+      .btn-copy {
+        width: 100%;
+        padding: 14px 20px;
+      }
+
+      .step-number {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════ NAVBAR ═══════════════════ -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M33.3 11.5A8.3 8.3 0 0 1 27 8.6V4h-5.6v26.2a5.4 5.4 0 0 1-5.4 5 5.4 5.4 0 0 1-5.4-5.4 5.4 5.4 0 0 1 5.4-5.4c.6 0 1.1.1 1.6.2v-5.7A11 11 0 0 0 16 19a11 11 0 0 0-11 11.2A11 11 0 0 0 16 41.2a11 11 0 0 0 11-11V19.4a14 14 0 0 0 8.3 2.7v-5.6a8.3 8.3 0 0 1-2-5z" fill="url(#tiktokGrad)"/>
+        <defs>
+          <linearGradient id="tiktokGrad" x1="5" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#7c3aed"/>
+            <stop offset="1" stop-color="#a855f7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="nav-logo-text">DONGLOT</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#hero">Beranda</a></li>
+      <li><a href="#cara-pakai">Cara Pakai</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile nav overlay -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#hero" onclick="closeMobileNav()">Beranda</a>
+    <a href="#cara-pakai" onclick="closeMobileNav()">Cara Pakai</a>
+    <a href="#faq" onclick="closeMobileNav()">FAQ</a>
+  </div>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero" id="hero">
+    <!-- Animated blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Particles -->
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">DONGLOT VIDEO TIKTOKMU BEN LAKA WM E</h1>
+      <p class="hero-subtitle">Paste link TikTokmu, langsung unduh tanpa watermark 🔥</p>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            class="url-input"
+            id="urlInput"
+            placeholder="https://www.tiktok.com/@username/video/..."
+            oninput="onInputChange()"
+          />
+          <button class="btn-clear" id="btnClear" onclick="clearInput()" title="Hapus">&times;</button>
+        </div>
+        <p class="error-msg" id="errorMsg">URL tidak valid. Pastikan link dari tiktok.com</p>
+
+        <div class="btn-actions">
+          <button class="btn-download" id="btnDownload" onclick="handleDownload()">⬇️ DONGLOT SEKARANG</button>
+          <button class="btn-copy" id="btnCopy" onclick="copyUrl()">
+            📋 Copy URL
+            <span class="copy-tooltip" id="copyTooltip">Tersalin!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div class="spinner-overlay" id="spinnerOverlay">
+        <div class="spinner"></div>
+        <span class="spinner-text">Sedang memproses video...</span>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="resultCard">
+        <div class="result-inner">
+          <div class="result-thumb" id="resultThumb">
+            <img src="https://placehold.co/280x400/1a1a1a/7c3aed?text=TikTok%0AVideo" alt="Video Thumbnail" />
+          </div>
+          <div class="result-info">
+            <h3 class="result-title" id="resultTitle">Tutorial masak ayam geprek pake kompor roket 🍗🔥</h3>
+            <p class="result-author" id="resultAuthor">@chef_kampung</p>
+            <div class="result-buttons">
+              <button class="btn-result btn-video" onclick="downloadVideo()">📥 Tanpa Watermark (HD)</button>
+              <button class="btn-result btn-audio" onclick="downloadAudio()">🎵 Audio MP3</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FITUR ═══════════════════ -->
+  <section class="section" id="fitur">
+    <h2 class="section-title">Kenapa Pilih DONGLOT?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3 class="feature-title">Super Cepat</h3>
+        <p class="feature-desc">Unduh dalam hitungan detik. Server kami dioptimalkan untuk kecepatan maksimal.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🚫</span>
+        <h3 class="feature-title">Tanpa Watermark</h3>
+        <p class="feature-desc">Video bersih 100% tanpa logo TikTok yang mengganggu.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🆓</span>
+        <h3 class="feature-title">Gratis Selamanya</h3>
+        <p class="feature-desc">Tidak perlu registrasi, tidak ada biaya tersembunyi. Selamanya gratis.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CARA PAKAI ═══════════════════ -->
+  <section class="section" id="cara-pakai">
+    <h2 class="section-title">Cara Pakai</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3 class="step-title">Copy Link Video</h3>
+        <p class="step-desc">Buka TikTok, temukan video yang ingin diunduh, lalu copy link-nya.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3 class="step-title">Paste di Kolom Input</h3>
+        <p class="step-desc">Tempelkan link TikTok yang sudah dicopy ke kolom input di atas.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3 class="step-title">Klik DONGLOT</h3>
+        <p class="step-desc">Tekan tombol DONGLOT SEKARANG dan tunggu unduhan selesai.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FAQ ═══════════════════ -->
+  <section class="section" id="faq">
+    <h2 class="section-title">Pertanyaan Umum (FAQ)</h2>
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Apakah DONGLOT benar-benar gratis?
+          <span>+</span>
+        </div>
+        <div class="faq-answer">Ya, 100% gratis. Tidak ada biaya tersembunyi dan tidak perlu registrasi apapun.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Apakah aman mengunduh video dari sini?
+          <span>+</span>
+        </div>
+        <div class="faq-answer">Tentu saja. DONGLOT tidak menyimpan data pribadi Anda dan semua proses dilakukan secara aman.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Format apa saja yang didukung?
+          <span>+</span>
+        </div>
+        <div class="faq-answer">Kami mendukung unduhan video HD (MP4) tanpa watermark dan audio MP3 dari video TikTok.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">
+          Bisa unduh video private?
+          <span>+</span>
+        </div>
+        <div class="faq-answer">Tidak, hanya video publik yang bisa diunduh. Pastikan video yang ingin diunduh bersifat publik.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer">
+    <p>&copy; 2025 <span>DONGLOT</span> &mdash; Dibuat dengan 💜 di Semarang</p>
+  </footer>
+
+  <!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+  <script>
+    // ── Navbar scroll effect ──
+    window.addEventListener('scroll', function () {
+      var navbar = document.getElementById('navbar');
+      if (window.scrollY > 30) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ── Mobile nav ──
+    function toggleMobileNav() {
+      var nav = document.getElementById('mobileNav');
+      var hamburger = document.getElementById('hamburger');
+      nav.classList.toggle('open');
+      hamburger.classList.toggle('active');
+    }
+
+    function closeMobileNav() {
+      document.getElementById('mobileNav').classList.remove('open');
+      document.getElementById('hamburger').classList.remove('active');
+    }
+
+    // ── Input change handler ──
+    function onInputChange() {
+      var input = document.getElementById('urlInput');
+      var btnClear = document.getElementById('btnClear');
+      var errorMsg = document.getElementById('errorMsg');
+
+      if (input.value.length > 0) {
+        btnClear.classList.add('show');
+      } else {
+        btnClear.classList.remove('show');
+      }
+
+      errorMsg.classList.remove('visible');
+    }
+
+    // ── Clear input ──
+    function clearInput() {
+      var input = document.getElementById('urlInput');
+      input.value = '';
+      document.getElementById('btnClear').classList.remove('show');
+      document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('resultCard').classList.remove('show');
+      input.focus();
+    }
+
+    // ── Validate URL ──
+    function isValidTikTokUrl(url) {
+      return url.toLowerCase().includes('tiktok.com');
+    }
+
+    // ── Handle download ──
+    function handleDownload() {
+      var input = document.getElementById('urlInput');
+      var errorMsg = document.getElementById('errorMsg');
+      var spinner = document.getElementById('spinnerOverlay');
+      var resultCard = document.getElementById('resultCard');
+      var url = input.value.trim();
+
+      // Hide previous results
+      resultCard.classList.remove('show');
+
+      if (!url) {
+        errorMsg.textContent = 'Masukkan link TikTok terlebih dahulu!';
+        errorMsg.classList.add('visible');
+        return;
+      }
+
+      if (!isValidTikTokUrl(url)) {
+        errorMsg.textContent = 'URL tidak valid. Pastikan link dari tiktok.com';
+        errorMsg.classList.add('visible');
+        return;
+      }
+
+      errorMsg.classList.remove('visible');
+
+      // Show spinner
+      spinner.classList.add('active');
+
+      // Simulate loading
+      setTimeout(function () {
+        spinner.classList.remove('active');
+
+        // Show result card with dummy data
+        var dummyTitles = [
+          'Tutorial masak ayam geprek pake kompor roket 🍗🔥',
+          'POV: kamu anak rantau yang kangen rumah 🏠💔',
+          'Transition makeup yang bikin kaget! 💄✨',
+          'Dance challenge terbaru yang viral abis 💃🕺',
+          'Tips produktif biar gak mager seharian 📚⚡'
+        ];
+
+        var dummyAuthors = [
+          '@chef_kampung',
+          '@anak.rantau_',
+          '@beautyglow.id',
+          '@dance.kuy',
+          '@produktif.daily'
+        ];
+
+        var randomIdx = Math.floor(Math.random() * dummyTitles.length);
+        document.getElementById('resultTitle').textContent = dummyTitles[randomIdx];
+        document.getElementById('resultAuthor').textContent = dummyAuthors[randomIdx];
+
+        resultCard.classList.add('show');
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 1500);
+    }
+
+    // ── Download actions ──
+    function downloadVideo() {
+      window.alert('Mengunduh video tanpa watermark...');
+    }
+
+    function downloadAudio() {
+      window.alert('Mengunduh audio MP3...');
+    }
+
+    // ── Copy URL ──
+    function copyUrl() {
+      var input = document.getElementById('urlInput');
+      var tooltip = document.getElementById('copyTooltip');
+
+      if (input.value.trim()) {
+        navigator.clipboard.writeText(input.value.trim()).then(function () {
+          tooltip.classList.add('show');
+          setTimeout(function () {
+            tooltip.classList.remove('show');
+          }, 1500);
+        });
+      } else {
+        input.focus();
+      }
+    }
+
+    // ── FAQ toggle ──
+    function toggleFaq(item) {
+      var allItems = document.querySelectorAll('.faq-item');
+      allItems.forEach(function (el) {
+        if (el !== item) {
+          el.classList.remove('open');
+        }
+      });
+      item.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
