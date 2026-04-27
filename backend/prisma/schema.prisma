@@ -1,0 +1,428 @@
+// Prisma schema for PKBM MUGI SAE LMS
+// Generator & datasource
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =====================
+// ENUMS
+// =====================
+
+enum Role {
+  ADMIN
+  GURU
+  SISWA
+}
+
+enum PaketLevel {
+  PAKET_A
+  PAKET_B
+  PAKET_C
+}
+
+enum StatusSiswa {
+  AKTIF
+  LULUS
+  NONAKTIF
+  CUTI
+}
+
+enum TipeMateri {
+  VIDEO
+  PDF
+  ARTIKEL
+  QUIZ
+  LINK
+}
+
+enum StatusHadir {
+  HADIR
+  IZIN
+  SAKIT
+  ALPHA
+}
+
+enum TipeNotif {
+  INFO
+  TUGAS
+  NILAI
+  PRESENSI
+  PENGUMUMAN
+  FORUM
+}
+
+enum TargetAnnouncement {
+  ALL
+  ADMIN
+  GURU
+  SISWA
+  PAKET_A
+  PAKET_B
+  PAKET_C
+}
+
+// =====================
+// MODELS
+// =====================
+
+/// Pengguna sistem (Admin, Guru, dan Siswa). Profil tambahan disimpan di model Guru/Siswa.
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  password     String
+  role         Role
+  avatar       String?
+  phone        String?
+  address      String?
+  isActive     Boolean  @default(true)
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  guru         Guru?
+  siswa        Siswa?
+  pengumuman   Pengumuman[]
+  forum        Forum[]
+  forumReplies ForumReply[]
+  notifikasi   Notifikasi[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+/// Paket pendidikan kesetaraan: Paket A (SD), Paket B (SMP), Paket C (SMA).
+model Paket {
+  id        String     @id @default(cuid())
+  level     PaketLevel @unique
+  nama      String
+  deskripsi String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  mataPelajaran MataPelajaran[]
+  siswa         Siswa[]
+  kelas         Kelas[]
+}
+
+/// Mata pelajaran yang ditawarkan dalam sebuah paket pendidikan.
+model MataPelajaran {
+  id        String   @id @default(cuid())
+  nama      String
+  kode      String
+  deskripsi String
+  icon      String
+  paketId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  paket Paket   @relation(fields: [paketId], references: [id], onDelete: Cascade)
+  nilai Nilai[]
+
+  @@unique([paketId, kode])
+  @@index([paketId])
+}
+
+/// Profil guru (one-to-one dengan User berperan GURU).
+model Guru {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  nip          String?  @unique
+  spesialisasi String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kelas  Kelas[]
+  materi Materi[]
+  tugas  Tugas[]
+
+  @@index([userId])
+}
+
+/// Profil siswa (one-to-one dengan User berperan SISWA).
+model Siswa {
+  id         String      @id @default(cuid())
+  userId     String      @unique
+  nisn       String?     @unique
+  paketId    String
+  tahunMasuk Int
+  status     StatusSiswa @default(AKTIF)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paket        Paket          @relation(fields: [paketId], references: [id], onDelete: Cascade)
+  kelasAnggota KelasAnggota[]
+  pengumpulan  Pengumpulan[]
+  presensi     Presensi[]
+  nilai        Nilai[]
+
+  @@index([userId])
+  @@index([paketId])
+  @@index([status])
+}
+
+/// Kelas pembelajaran yang diajar oleh seorang guru pada paket tertentu.
+model Kelas {
+  id          String   @id @default(cuid())
+  nama        String
+  kode        String   @unique
+  paketId     String
+  guruId      String
+  tahunAjaran String
+  semester    Int
+  isAktif     Boolean  @default(true)
+  jadwal      Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  paket        Paket          @relation(fields: [paketId], references: [id], onDelete: Cascade)
+  guru         Guru           @relation(fields: [guruId], references: [id], onDelete: Cascade)
+  kelasAnggota KelasAnggota[]
+  materi       Materi[]
+  tugas        Tugas[]
+  presensi     Presensi[]
+  nilai        Nilai[]
+  forum        Forum[]
+
+  @@index([paketId])
+  @@index([guruId])
+  @@index([tahunAjaran, semester])
+  @@index([isAktif])
+}
+
+/// Tabel pivot antara Kelas dan Siswa yang mendaftar.
+model KelasAnggota {
+  id            String   @id @default(cuid())
+  kelasId       String
+  siswaId       String
+  tanggalGabung DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  kelas Kelas @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  siswa Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@unique([kelasId, siswaId])
+  @@index([kelasId])
+  @@index([siswaId])
+}
+
+/// Materi pembelajaran (artikel, video, PDF, kuis, atau tautan eksternal).
+model Materi {
+  id          String     @id @default(cuid())
+  judul       String
+  deskripsi   String?
+  konten      String?
+  tipe        TipeMateri
+  fileUrl     String?
+  linkUrl     String?
+  thumbnail   String?
+  kelasId     String
+  guruId      String
+  urutan      Int        @default(0)
+  isPublished Boolean    @default(false)
+  durasiMenit Int?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  kelas Kelas @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  guru  Guru  @relation(fields: [guruId], references: [id], onDelete: Cascade)
+
+  @@index([kelasId])
+  @@index([guruId])
+  @@index([tipe])
+  @@index([isPublished])
+}
+
+/// Tugas yang diberikan guru kepada siswa di sebuah kelas.
+model Tugas {
+  id            String   @id @default(cuid())
+  judul         String
+  deskripsi     String
+  kelasId       String
+  guruId        String
+  deadline      DateTime
+  nilaiMaksimum Float    @default(100)
+  fileUrl       String?
+  isAktif       Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  kelas       Kelas         @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  guru        Guru          @relation(fields: [guruId], references: [id], onDelete: Cascade)
+  pengumpulan Pengumpulan[]
+
+  @@index([kelasId])
+  @@index([guruId])
+  @@index([deadline])
+  @@index([isAktif])
+}
+
+/// Submission siswa terhadap sebuah tugas, beserta nilai dan feedback.
+model Pengumpulan {
+  id          String    @id @default(cuid())
+  tugasId     String
+  siswaId     String
+  fileUrl     String?
+  linkUrl     String?
+  catatan     String?
+  nilaiAkhir  Float?
+  feedback    String?
+  submittedAt DateTime  @default(now())
+  gradedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tugas Tugas @relation(fields: [tugasId], references: [id], onDelete: Cascade)
+  siswa Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@unique([tugasId, siswaId])
+  @@index([tugasId])
+  @@index([siswaId])
+}
+
+/// Catatan kehadiran siswa pada hari tertentu di sebuah kelas.
+model Presensi {
+  id         String      @id @default(cuid())
+  kelasId    String
+  siswaId    String
+  tanggal    DateTime
+  status     StatusHadir
+  keterangan String?
+  isLocked   Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  kelas Kelas @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  siswa Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@unique([kelasId, siswaId, tanggal])
+  @@index([kelasId])
+  @@index([siswaId])
+  @@index([tanggal])
+  @@index([status])
+}
+
+/// Pengumuman / informasi global untuk semua atau sebagian pengguna.
+model Pengumuman {
+  id          String             @id @default(cuid())
+  judul       String
+  konten      String
+  target      TargetAnnouncement @default(ALL)
+  authorId    String
+  isPublished Boolean            @default(false)
+  publishedAt DateTime?
+  viewCount   Int                @default(0)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([target])
+  @@index([isPublished])
+}
+
+/// Thread diskusi yang dibuat di dalam sebuah kelas.
+model Forum {
+  id        String   @id @default(cuid())
+  judul     String
+  konten    String
+  kelasId   String
+  authorId  String
+  isPinned  Boolean  @default(false)
+  viewCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  kelas   Kelas        @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+  author  User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  replies ForumReply[]
+
+  @@index([kelasId])
+  @@index([authorId])
+  @@index([isPinned])
+}
+
+/// Balasan terhadap thread Forum, dapat ditandai sebagai jawaban terbaik.
+model ForumReply {
+  id           String   @id @default(cuid())
+  forumId      String
+  authorId     String
+  konten       String
+  isBestAnswer Boolean  @default(false)
+  likeCount    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  forum  Forum @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([forumId])
+  @@index([authorId])
+  @@index([isBestAnswer])
+}
+
+/// Rekap nilai siswa per mata pelajaran per semester.
+model Nilai {
+  id              String   @id @default(cuid())
+  siswaId         String
+  mataPelajaranId String
+  kelasId         String
+  nilaiTugas      Float?
+  nilaiUTS        Float?
+  nilaiUAS        Float?
+  nilaiAkhir      Float?
+  semester        Int
+  tahunAjaran     String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  siswa         Siswa         @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  mataPelajaran MataPelajaran @relation(fields: [mataPelajaranId], references: [id], onDelete: Cascade)
+  kelas         Kelas         @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+
+  @@unique([siswaId, mataPelajaranId, semester, tahunAjaran])
+  @@index([siswaId])
+  @@index([mataPelajaranId])
+  @@index([kelasId])
+  @@index([tahunAjaran, semester])
+}
+
+/// Notifikasi in-app untuk pengguna (deep-link ke halaman terkait).
+model Notifikasi {
+  id        String    @id @default(cuid())
+  userId    String
+  judul     String
+  pesan     String
+  tipe      TipeNotif
+  isRead    Boolean   @default(false)
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tipe])
+  @@index([isRead])
+}
+
+/// Pengaturan sistem berbasis key-value (nama PKBM, alamat, bobot nilai, dll).
+model Pengaturan {
+  id         String   @id @default(cuid())
+  key        String   @unique
+  value      String
+  keterangan String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+.vite/
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Prisma
+backend/prisma/migrations/dev.db*
+
+# Uploads (keep folder structure but ignore content)
+backend/uploads/avatars/*
+backend/uploads/materi/*
+backend/uploads/tugas/*
+!backend/uploads/avatars/.gitkeep
+!backend/uploads/materi/.gitkeep
+!backend/uploads/tugas/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.pid
+*.seed
+*.tgz
