@@ -4,25 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DONGLOT — TikTok Downloader Tanpa Watermark</title>
+  <meta name="description" content="Download video TikTok tanpa watermark secara gratis. Tersedia format HD MP4, SD MP4, dan MP3. Tanpa registrasi, tanpa biaya." />
+  <meta name="keywords" content="tiktok downloader, download tiktok, tanpa watermark, no watermark, tiktok mp4, tiktok mp3, donglot" />
+  <meta name="author" content="DONGLOT" />
+  <meta name="theme-color" content="#7c3aed" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="DONGLOT — TikTok Downloader Tanpa Watermark" />
+  <meta property="og:description" content="Download video TikTok tanpa watermark. HD, SD, dan MP3. 100% gratis." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬇️</text></svg>" />
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://www.tikwm.com" />
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap');
 
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
     body {
       font-family: 'Inter', sans-serif;
-      background: #0a0a0a;
-      color: #ffffff;
-      overflow-x: hidden;
-      line-height: 1.6;
+      background: #0a0a0a; color: #ffffff;
+      overflow-x: hidden; line-height: 1.6;
     }
-
     a { text-decoration: none; color: inherit; }
 
     /* ══════════ NAVBAR ══════════ */
@@ -36,7 +46,6 @@
       transition: border-color 0.3s;
     }
     .navbar.scrolled { border-bottom: 1px solid rgba(124,58,237,0.3); }
-
     .nav-logo { display: flex; align-items: center; gap: 10px; }
     .nav-logo svg { width: 28px; height: 28px; }
     .nav-logo-text {
@@ -44,7 +53,6 @@
       background: linear-gradient(135deg, #7c3aed, #a855f7);
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
-
     .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
     .nav-links a {
       font-size: 0.9rem; font-weight: 500; color: #fff;
@@ -59,7 +67,7 @@
 
     .hamburger {
       display: none; flex-direction: column; gap: 5px;
-      cursor: pointer; z-index: 1001;
+      cursor: pointer; z-index: 1001; background: none; border: none; padding: 4px;
     }
     .hamburger span {
       display: block; width: 24px; height: 2px;
@@ -89,7 +97,6 @@
       align-items: center; justify-content: center; text-align: center;
       padding: 120px 20px 80px; position: relative; overflow: hidden;
     }
-
     .blob {
       position: absolute; border-radius: 50%;
       filter: blur(120px); opacity: 0.35;
@@ -98,7 +105,6 @@
     .blob-1 { width: 500px; height: 500px; background: #7c3aed; top: -100px; left: -100px; }
     .blob-2 { width: 400px; height: 400px; background: #a855f7; bottom: -50px; right: -100px; animation-delay: -4s; }
     .blob-3 { width: 300px; height: 300px; background: #c084fc; top: 40%; left: 50%; animation-delay: -8s; }
-
     @keyframes blobMove {
       0%   { transform: translate(0,0) scale(1); }
       33%  { transform: translate(60px,-40px) scale(1.15); }
@@ -122,7 +128,6 @@
     .particle:nth-child(8)  { left:60%;  top:45%;  animation-duration:9s;  animation-delay:-7s; }
     .particle:nth-child(9)  { left:90%;  top:85%;  animation-duration:10s; animation-delay:-2s; }
     .particle:nth-child(10) { left:35%;  top:90%;  animation-duration:7s;  animation-delay:-8s; }
-
     @keyframes particleFloat {
       0%   { transform: translateY(0) translateX(0); opacity: 0; }
       10%  { opacity: 1; }
@@ -131,7 +136,6 @@
     }
 
     .hero-content { position: relative; z-index: 2; max-width: 800px; width: 100%; }
-
     .hero-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(1.8rem, 4.5vw, 3.8rem);
@@ -142,13 +146,11 @@
       filter: drop-shadow(0 0 20px rgba(168,85,247,0.5));
       margin-bottom: 12px; line-height: 1.2;
     }
-
     .hero-subtitle {
       font-family: 'Inter', sans-serif; font-style: italic;
       color: #a0a0a0; font-size: clamp(0.9rem, 2vw, 1.1rem);
       margin-bottom: 20px;
     }
-
     .hero-badge {
       display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center;
       padding: 10px 24px; border-radius: 50px;
@@ -163,7 +165,7 @@
     }
     .input-wrapper { position: relative; width: 100%; }
     .url-input {
-      width: 100%; padding: 18px 50px 18px 24px;
+      width: 100%; padding: 18px 90px 18px 24px;
       font-family: 'Inter', sans-serif; font-size: 1rem; color: #fff;
       background: rgba(255,255,255,0.04);
       border: 2px solid rgba(124,58,237,0.6); border-radius: 16px;
@@ -176,13 +178,17 @@
       box-shadow: 0 0 20px rgba(124,58,237,0.4), 0 0 60px rgba(124,58,237,0.1);
     }
 
-    .btn-clear {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; color: #666; font-size: 1.2rem;
-      cursor: pointer; padding: 4px; display: none; transition: color 0.3s;
+    .input-btns {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; gap: 4px;
     }
-    .btn-clear:hover { color: #a855f7; }
-    .btn-clear.show { display: block; }
+    .btn-icon {
+      background: none; border: none; color: #666; font-size: 1.1rem;
+      cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:hover { color: #a855f7; background: rgba(124,58,237,0.1); }
+    .btn-icon.hide { display: none; }
 
     .error-msg {
       color: #ef4444; font-size: 0.85rem; min-height: 20px;
@@ -190,8 +196,13 @@
     }
     .error-msg.visible { opacity: 1; }
 
-    .btn-actions { display: flex; gap: 12px; width: 100%; flex-wrap: wrap; justify-content: center; }
+    .success-msg {
+      color: #22c55e; font-size: 0.85rem; min-height: 20px;
+      transition: opacity 0.3s; opacity: 0;
+    }
+    .success-msg.visible { opacity: 1; }
 
+    .btn-actions { display: flex; gap: 12px; width: 100%; flex-wrap: wrap; justify-content: center; }
     .btn-download-main {
       padding: 16px 40px; font-family: 'Inter', sans-serif;
       font-size: 1.05rem; font-weight: 600; color: #fff;
@@ -210,7 +221,6 @@
       opacity: 0.6; cursor: not-allowed;
       animation: none; transform: none;
     }
-
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.4); }
       50%      { box-shadow: 0 0 20px 6px rgba(124,58,237,0.15); }
@@ -242,7 +252,6 @@
       overflow: hidden;
     }
     .result-card.show { display: block; animation: fadeInUp 0.6s ease forwards; }
-
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(30px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -253,9 +262,23 @@
       width: 160px; height: 220px; border-radius: 12px;
       overflow: hidden; flex-shrink: 0;
       background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      position: relative;
     }
     .result-thumb img {
       width: 100%; height: 100%; object-fit: cover; border-radius: 12px;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .result-thumb img.loaded { opacity: 1; }
+    .thumb-skeleton {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    .thumb-skeleton.hide { display: none; }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     .result-info { flex: 1; min-width: 0; text-align: left; }
@@ -265,13 +288,11 @@
       -webkit-box-orient: vertical; overflow: hidden;
     }
     .result-author { color: #a0a0a0; font-size: 0.9rem; margin-bottom: 12px; }
-
     .result-stats {
       display: flex; gap: 16px; flex-wrap: wrap;
       margin-bottom: 20px; font-size: 0.8rem; color: #888;
     }
     .result-stats span { display: flex; align-items: center; gap: 4px; }
-
     .result-buttons { display: flex; flex-direction: column; gap: 10px; }
 
     .btn-result {
@@ -281,30 +302,23 @@
     }
     .btn-result:hover { transform: scale(1.03); }
     .btn-result:disabled { opacity: 0.6; cursor: wait; transform: none; }
-
-    .btn-hd {
-      background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff;
-    }
+    .btn-hd { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
     .btn-hd:hover { box-shadow: 0 6px 24px rgba(124,58,237,0.4); }
-
     .btn-sd {
       background: rgba(124,58,237,0.15); color: #c084fc;
       border: 1px solid rgba(124,58,237,0.3);
     }
     .btn-sd:hover { background: rgba(124,58,237,0.25); }
-
     .btn-mp3 {
       background: rgba(168,85,247,0.1); color: #a855f7;
       border: 1px solid rgba(168,85,247,0.25);
     }
     .btn-mp3:hover { background: rgba(168,85,247,0.2); }
-
     .btn-reset {
       padding: 12px 20px; font-family: 'Inter', sans-serif;
       font-size: 0.9rem; font-weight: 500; color: #888;
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; cursor: pointer; transition: all 0.3s;
-      margin-top: 4px;
+      border-radius: 12px; cursor: pointer; transition: all 0.3s; margin-top: 4px;
     }
     .btn-reset:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
 
@@ -317,7 +331,6 @@
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    /* Features */
     .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
     .feature-card {
       background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
@@ -333,7 +346,6 @@
     .feature-title { font-weight: 700; font-size: 1.15rem; margin-bottom: 10px; }
     .feature-desc { color: #a0a0a0; font-size: 0.9rem; line-height: 1.5; }
 
-    /* Steps */
     .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; }
     .step-card { text-align: center; padding: 32px 20px; }
     .step-number {
@@ -345,7 +357,6 @@
     .step-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
     .step-desc { color: #a0a0a0; font-size: 0.9rem; }
 
-    /* FAQ */
     .faq-list {
       max-width: 700px; margin: 0 auto;
       display: flex; flex-direction: column; gap: 12px;
@@ -358,10 +369,14 @@
     .faq-question {
       padding: 20px 24px; font-weight: 600; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center;
-      user-select: none;
+      user-select: none; background: none; border: none; color: #fff;
+      width: 100%; font-family: 'Inter', sans-serif; font-size: 1rem; text-align: left;
     }
-    .faq-question span { font-size: 1.2rem; transition: transform 0.3s; }
-    .faq-item.open .faq-question span { transform: rotate(45deg); }
+    .faq-question:focus-visible {
+      outline: 2px solid #a855f7; outline-offset: -2px; border-radius: 14px;
+    }
+    .faq-question .faq-icon { font-size: 1.2rem; transition: transform 0.3s; }
+    .faq-item.open .faq-question .faq-icon { transform: rotate(45deg); }
     .faq-answer {
       max-height: 0; overflow: hidden;
       transition: max-height 0.3s ease, padding 0.3s ease;
@@ -369,12 +384,35 @@
     }
     .faq-item.open .faq-answer { max-height: 200px; padding: 0 24px 20px; }
 
+    /* ══════════ SCROLL TO TOP ══════════ */
+    .scroll-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 900;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; border: none; cursor: pointer;
+      font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: all 0.3s; box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+    }
+    .scroll-top.show { opacity: 1; pointer-events: auto; }
+    .scroll-top:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(124,58,237,0.5); }
+
     /* ══════════ FOOTER ══════════ */
     .footer {
       background: #050505; border-top: 1px solid rgba(124,58,237,0.2);
       text-align: center; padding: 32px 20px; color: #a0a0a0; font-size: 0.85rem;
     }
     .footer span { color: #a855f7; }
+
+    /* ══════════ TOAST ══════════ */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: #1a1a1a; color: #c084fc; border: 1px solid rgba(124,58,237,0.3);
+      padding: 10px 24px; border-radius: 12px; font-size: 0.85rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+      z-index: 1100; backdrop-filter: blur(10px);
+    }
+    .toast.show { opacity: 1; }
 
     /* ══════════ RESPONSIVE ══════════ */
     @media (max-width: 768px) {
@@ -390,10 +428,9 @@
       .section { padding: 60px 20px; }
       .hero-badge { gap: 8px; font-size: 0.78rem; padding: 8px 16px; }
     }
-
     @media (max-width: 480px) {
       .hero { padding: 100px 16px 60px; }
-      .url-input { padding: 14px 44px 14px 16px; font-size: 0.9rem; }
+      .url-input { padding: 14px 80px 14px 16px; font-size: 0.9rem; }
       .btn-download-main { padding: 14px 24px; font-size: 0.95rem; min-width: unset; width: 100%; }
       .step-number { font-size: 3rem; }
     }
@@ -402,9 +439,9 @@
 <body>
 
   <!-- NAVBAR -->
-  <nav class="navbar" id="navbar">
-    <a href="#" class="nav-logo">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Menu utama">
+    <a href="#hero" class="nav-logo" aria-label="DONGLOT - Kembali ke beranda">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <path d="M33.3 11.5A8.3 8.3 0 0 1 27 8.6V4h-5.6v26.2a5.4 5.4 0 0 1-5.4 5 5.4 5.4 0 0 1-5.4-5.4 5.4 5.4 0 0 1 5.4-5.4c.6 0 1.1.1 1.6.2v-5.7A11 11 0 0 0 16 19a11 11 0 0 0-11 11.2A11 11 0 0 0 16 41.2a11 11 0 0 0 11-11V19.4a14 14 0 0 0 8.3 2.7v-5.6a8.3 8.3 0 0 1-2-5z" fill="url(#tg)"/>
         <defs><linearGradient id="tg" x1="5" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
           <stop stop-color="#7c3aed"/><stop offset="1" stop-color="#a855f7"/>
@@ -417,144 +454,172 @@
       <li><a href="#cara-pakai">Cara Pakai</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
-    </div>
+    </button>
   </nav>
 
-  <div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Menu navigasi">
     <a href="#hero" onclick="closeMobileNav()">Beranda</a>
     <a href="#cara-pakai" onclick="closeMobileNav()">Cara Pakai</a>
     <a href="#faq" onclick="closeMobileNav()">FAQ</a>
   </div>
 
   <!-- HERO -->
-  <section class="hero" id="hero">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-    <div class="particles">
-      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-      <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-      <div class="particle"></div>
-    </div>
-
-    <div class="hero-content">
-      <h1 class="hero-title">DONGLOT VIDEO TIKTOKMU BEN LAKA WM E</h1>
-      <p class="hero-subtitle">Paste link TikTokmu &rarr; Download langsung tanpa watermark 🔥</p>
-      <div class="hero-badge">
-        <span>✅ Gratis</span>
-        <span>🚫 No Watermark</span>
-        <span>⚡ HD Quality</span>
+  <main>
+    <section class="hero" id="hero">
+      <div class="blob blob-1" aria-hidden="true"></div>
+      <div class="blob blob-2" aria-hidden="true"></div>
+      <div class="blob blob-3" aria-hidden="true"></div>
+      <div class="particles" aria-hidden="true">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div>
       </div>
 
-      <div class="input-group">
-        <div class="input-wrapper">
-          <input type="text" class="url-input" id="urlInput"
-            placeholder="Paste link TikTok kamu di sini..."
-            oninput="onInputChange()" />
-          <button class="btn-clear" id="btnClear" onclick="clearInput()" title="Hapus">&times;</button>
+      <div class="hero-content">
+        <h1 class="hero-title">DONGLOT VIDEO TIKTOKMU BEN LAKA WM E</h1>
+        <p class="hero-subtitle">Paste link TikTokmu &rarr; Download langsung tanpa watermark 🔥</p>
+        <div class="hero-badge" aria-label="Fitur utama">
+          <span>✅ Gratis</span>
+          <span>🚫 No Watermark</span>
+          <span>⚡ HD Quality</span>
         </div>
-        <p class="error-msg" id="errorMsg"></p>
 
-        <div class="btn-actions">
-          <button class="btn-download-main" id="btnDownload" onclick="handleDownload()">⬇️ DONGLOT SEKARANG</button>
-        </div>
-      </div>
-
-      <div class="spinner-overlay" id="spinnerOverlay">
-        <div class="spinner"></div>
-        <span class="spinner-text">Mengambil data video...</span>
-      </div>
-
-      <div class="result-card" id="resultCard">
-        <div class="result-inner">
-          <div class="result-thumb">
-            <img id="resultImg" src="" alt="Thumbnail" />
+        <div class="input-group" role="search" aria-label="Download TikTok video">
+          <div class="input-wrapper">
+            <input type="url" class="url-input" id="urlInput"
+              placeholder="Paste link TikTok kamu di sini..."
+              oninput="onInputChange()"
+              aria-label="Link video TikTok"
+              autocomplete="off"
+              spellcheck="false" />
+            <div class="input-btns">
+              <button class="btn-icon" id="btnPaste" onclick="pasteFromClipboard()" title="Paste dari clipboard" aria-label="Paste dari clipboard">📋</button>
+              <button class="btn-icon hide" id="btnClear" onclick="clearInput()" title="Hapus" aria-label="Hapus input">&times;</button>
+            </div>
           </div>
-          <div class="result-info">
-            <h3 class="result-title" id="resultTitle"></h3>
-            <p class="result-author" id="resultAuthor"></p>
-            <div class="result-stats" id="resultStats"></div>
-            <div class="result-buttons">
-              <button class="btn-result btn-hd" id="btnHD" onclick="dlHD()">📥 Download HD (No WM)</button>
-              <button class="btn-result btn-sd" id="btnSD" onclick="dlSD()">📥 Download SD (No WM)</button>
-              <button class="btn-result btn-mp3" id="btnMP3" onclick="dlMP3()">🎵 Download MP3</button>
-              <button class="btn-reset" onclick="resetForm()">🔄 Download Lain</button>
+          <p class="error-msg" id="errorMsg" role="alert" aria-live="assertive"></p>
+          <p class="success-msg" id="successMsg" role="status" aria-live="polite"></p>
+
+          <div class="btn-actions">
+            <button class="btn-download-main" id="btnDownload" onclick="handleDownload()">⬇️ DONGLOT SEKARANG</button>
+          </div>
+        </div>
+
+        <div class="spinner-overlay" id="spinnerOverlay" role="status" aria-label="Memproses">
+          <div class="spinner" aria-hidden="true"></div>
+          <span class="spinner-text">Mengambil data video...</span>
+        </div>
+
+        <div class="result-card" id="resultCard" aria-label="Hasil video">
+          <div class="result-inner">
+            <div class="result-thumb">
+              <div class="thumb-skeleton" id="thumbSkeleton"></div>
+              <img id="resultImg" src="" alt="Thumbnail video" onload="onThumbLoad()" />
+            </div>
+            <div class="result-info">
+              <h3 class="result-title" id="resultTitle"></h3>
+              <p class="result-author" id="resultAuthor"></p>
+              <div class="result-stats" id="resultStats" aria-label="Statistik video"></div>
+              <div class="result-buttons">
+                <button class="btn-result btn-hd" id="btnHD" onclick="dlHD()">📥 Download HD (No WM)</button>
+                <button class="btn-result btn-sd" id="btnSD" onclick="dlSD()">📥 Download SD (No WM)</button>
+                <button class="btn-result btn-mp3" id="btnMP3" onclick="dlMP3()">🎵 Download MP3</button>
+                <button class="btn-reset" onclick="resetForm()">🔄 Download Lain</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FITUR -->
-  <section class="section" id="fitur">
-    <h2 class="section-title">Kenapa Pilih DONGLOT?</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <h3 class="feature-title">Super Cepat</h3>
-        <p class="feature-desc">Unduh dalam hitungan detik. Server kami dioptimalkan untuk kecepatan maksimal.</p>
+    <!-- FITUR -->
+    <section class="section" id="fitur">
+      <h2 class="section-title">Kenapa Pilih DONGLOT?</h2>
+      <div class="features-grid">
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">⚡</span>
+          <h3 class="feature-title">Super Cepat</h3>
+          <p class="feature-desc">Unduh dalam hitungan detik. Server kami dioptimalkan untuk kecepatan maksimal.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">🚫</span>
+          <h3 class="feature-title">Tanpa Watermark</h3>
+          <p class="feature-desc">Video bersih 100% tanpa logo TikTok yang mengganggu.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">🆓</span>
+          <h3 class="feature-title">Gratis Selamanya</h3>
+          <p class="feature-desc">Tidak perlu registrasi, tidak ada biaya tersembunyi. Selamanya gratis.</p>
+        </article>
       </div>
-      <div class="feature-card">
-        <span class="feature-icon">🚫</span>
-        <h3 class="feature-title">Tanpa Watermark</h3>
-        <p class="feature-desc">Video bersih 100% tanpa logo TikTok yang mengganggu.</p>
-      </div>
-      <div class="feature-card">
-        <span class="feature-icon">🆓</span>
-        <h3 class="feature-title">Gratis Selamanya</h3>
-        <p class="feature-desc">Tidak perlu registrasi, tidak ada biaya tersembunyi. Selamanya gratis.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CARA PAKAI -->
-  <section class="section" id="cara-pakai">
-    <h2 class="section-title">Cara Pakai</h2>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <h3 class="step-title">Copy Link Video</h3>
-        <p class="step-desc">Buka TikTok, temukan video yang ingin diunduh, lalu copy link-nya.</p>
+    <!-- CARA PAKAI -->
+    <section class="section" id="cara-pakai">
+      <h2 class="section-title">Cara Pakai</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">1</div>
+          <h3 class="step-title">Copy Link Video</h3>
+          <p class="step-desc">Buka TikTok, temukan video yang ingin diunduh, lalu copy link-nya.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">2</div>
+          <h3 class="step-title">Paste di Kolom DONGLOT</h3>
+          <p class="step-desc">Tempelkan link TikTok yang sudah dicopy ke kolom input di atas.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number" aria-hidden="true">3</div>
+          <h3 class="step-title">Klik DONGLOT</h3>
+          <p class="step-desc">Tekan tombol DONGLOT SEKARANG dan video terunduh otomatis ke perangkatmu.</p>
+        </div>
       </div>
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <h3 class="step-title">Paste di Kolom DONGLOT</h3>
-        <p class="step-desc">Tempelkan link TikTok yang sudah dicopy ke kolom input di atas.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <h3 class="step-title">Klik DONGLOT</h3>
-        <p class="step-desc">Tekan tombol DONGLOT SEKARANG dan video terunduh otomatis ke perangkatmu.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FAQ -->
-  <section class="section" id="faq">
-    <h2 class="section-title">Pertanyaan Umum (FAQ)</h2>
-    <div class="faq-list">
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-question">Apakah gratis? <span>+</span></div>
-        <div class="faq-answer">Ya, 100% gratis. Tidak ada biaya tersembunyi dan tidak perlu registrasi apapun.</div>
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <h2 class="section-title">Pertanyaan Umum (FAQ)</h2>
+      <div class="faq-list" role="list">
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Apakah gratis?
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Ya, 100% gratis. Tidak ada biaya tersembunyi dan tidak perlu registrasi apapun.</div>
+        </div>
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Apakah video benar-benar tanpa watermark?
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Ya, video yang diunduh benar-benar bersih tanpa logo TikTok berkat API khusus yang kami gunakan.</div>
+        </div>
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Format apa yang tersedia?
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Tersedia MP4 HD (tanpa watermark), MP4 SD (tanpa watermark), dan MP3 (audio saja).</div>
+        </div>
+        <div class="faq-item" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Bisa unduh video private?
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Tidak, hanya video publik yang bisa diunduh. Pastikan video yang ingin diunduh bersifat publik.</div>
+        </div>
       </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-question">Apakah video benar-benar tanpa watermark? <span>+</span></div>
-        <div class="faq-answer">Ya, video yang diunduh benar-benar bersih tanpa logo TikTok berkat API khusus yang kami gunakan.</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-question">Format apa yang tersedia? <span>+</span></div>
-        <div class="faq-answer">Tersedia MP4 HD (tanpa watermark), MP4 SD (tanpa watermark), dan MP3 (audio saja).</div>
-      </div>
-      <div class="faq-item" onclick="toggleFaq(this)">
-        <div class="faq-question">Bisa unduh video private? <span>+</span></div>
-        <div class="faq-answer">Tidak, hanya video publik yang bisa diunduh. Pastikan video yang ingin diunduh bersifat publik.</div>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top" id="scrollTop" onclick="scrollToTop()" aria-label="Kembali ke atas">&uarr;</button>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -575,10 +640,18 @@
       return m + ':' + (sec < 10 ? '0' : '') + sec;
     }
 
-    /* ── Download file via blob ── */
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(function() { t.classList.remove('show'); }, 2000);
+    }
+
+    /* ── Download file via blob with CORS fallback ── */
     async function downloadFile(url, filename) {
       try {
         var response = await fetch(url);
+        if (!response.ok) throw new Error('fetch failed');
         var blob = await response.blob();
         var blobUrl = URL.createObjectURL(blob);
         var a = document.createElement('a');
@@ -587,41 +660,57 @@
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
+        setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
+        showToast('Download dimulai!');
       } catch (e) {
         window.open(url, '_blank');
+        showToast('Membuka di tab baru...');
       }
     }
 
-    /* ── Store video data globally ── */
+    /* ── Store video data ── */
     var videoData = null;
+    var isProcessing = false;
 
     /* ── Navbar scroll ── */
     window.addEventListener('scroll', function () {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+      document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 500);
     });
+
+    /* ── Scroll to top ── */
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     /* ── Mobile nav ── */
     function toggleMobileNav() {
-      document.getElementById('mobileNav').classList.toggle('open');
-      document.getElementById('hamburger').classList.toggle('active');
+      var nav = document.getElementById('mobileNav');
+      var hamburger = document.getElementById('hamburger');
+      var isOpen = nav.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', isOpen);
     }
     function closeMobileNav() {
       document.getElementById('mobileNav').classList.remove('open');
-      document.getElementById('hamburger').classList.remove('active');
+      var h = document.getElementById('hamburger');
+      h.classList.remove('active');
+      h.setAttribute('aria-expanded', 'false');
     }
 
     /* ── Input ── */
     function onInputChange() {
       var v = document.getElementById('urlInput').value;
-      document.getElementById('btnClear').classList.toggle('show', v.length > 0);
+      document.getElementById('btnClear').classList.toggle('hide', v.length === 0);
       document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('successMsg').classList.remove('visible');
     }
 
     function clearInput() {
       document.getElementById('urlInput').value = '';
-      document.getElementById('btnClear').classList.remove('show');
+      document.getElementById('btnClear').classList.add('hide');
       document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('successMsg').classList.remove('visible');
       document.getElementById('urlInput').focus();
     }
 
@@ -632,6 +721,50 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* ── Paste from clipboard ── */
+    async function pasteFromClipboard() {
+      try {
+        var text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('urlInput').value = text;
+          onInputChange();
+          showToast('Link berhasil di-paste!');
+          if (isValidUrl(text)) {
+            handleDownload();
+          }
+        }
+      } catch (e) {
+        showToast('Tidak bisa akses clipboard');
+      }
+    }
+
+    /* ── Auto-process on paste event ── */
+    document.getElementById('urlInput').addEventListener('paste', function(e) {
+      setTimeout(function() {
+        onInputChange();
+        var val = document.getElementById('urlInput').value.trim();
+        if (val && isValidUrl(val)) {
+          var sm = document.getElementById('successMsg');
+          sm.textContent = 'Link TikTok terdeteksi! Tekan Enter atau klik DONGLOT.';
+          sm.classList.add('visible');
+        }
+      }, 100);
+    });
+
+    /* ── Enter key support ── */
+    document.getElementById('urlInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleDownload();
+      }
+    });
+
+    /* ── Thumbnail loaded ── */
+    function onThumbLoad() {
+      document.getElementById('resultImg').classList.add('loaded');
+      document.getElementById('thumbSkeleton').classList.add('hide');
+    }
+
     /* ── Validate ── */
     function isValidUrl(url) {
       return url.includes('tiktok.com') || url.includes('vm.tiktok.com');
@@ -639,8 +772,11 @@
 
     /* ── Main download handler ── */
     async function handleDownload() {
+      if (isProcessing) return;
+
       var input = document.getElementById('urlInput');
       var errorMsg = document.getElementById('errorMsg');
+      var successMsg = document.getElementById('successMsg');
       var spinner = document.getElementById('spinnerOverlay');
       var resultCard = document.getElementById('resultCard');
       var btn = document.getElementById('btnDownload');
@@ -648,22 +784,30 @@
 
       resultCard.classList.remove('show');
       errorMsg.classList.remove('visible');
+      successMsg.classList.remove('visible');
 
       if (!url) {
         errorMsg.textContent = '❌ Masukkan link TikTok terlebih dahulu!';
         errorMsg.classList.add('visible');
+        input.focus();
         return;
       }
 
       if (!isValidUrl(url)) {
         errorMsg.textContent = '❌ Link tidak valid! Masukkan URL TikTok yang benar.';
         errorMsg.classList.add('visible');
+        input.focus();
         return;
       }
 
+      isProcessing = true;
       spinner.classList.add('active');
       btn.disabled = true;
       btn.textContent = '⏳ Memproses...';
+
+      // Reset thumbnail state
+      document.getElementById('resultImg').classList.remove('loaded');
+      document.getElementById('thumbSkeleton').classList.remove('hide');
 
       try {
         var apiUrl = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1';
@@ -687,7 +831,7 @@
           resultCard.classList.add('show');
           resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
-          throw new Error('API returned error');
+          throw new Error('API error');
         }
       } catch (err) {
         spinner.classList.remove('active');
@@ -695,6 +839,7 @@
         errorMsg.classList.add('visible');
       }
 
+      isProcessing = false;
       btn.disabled = false;
       btn.textContent = '⬇️ DONGLOT SEKARANG';
     }
@@ -705,8 +850,7 @@
       var btn = document.getElementById('btnHD');
       var orig = btn.textContent;
       btn.disabled = true; btn.textContent = '⏳ Mengunduh...';
-      var url = videoData.hdplay || videoData.play;
-      await downloadFile(url, 'donglot_hd.mp4');
+      await downloadFile(videoData.hdplay || videoData.play, 'donglot_hd.mp4');
       btn.disabled = false; btn.textContent = orig;
     }
 
@@ -730,11 +874,23 @@
 
     /* ── FAQ ── */
     function toggleFaq(item) {
+      var wasOpen = item.classList.contains('open');
       document.querySelectorAll('.faq-item').forEach(function (el) {
-        if (el !== item) el.classList.remove('open');
+        el.classList.remove('open');
+        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
       });
-      item.classList.toggle('open');
+      if (!wasOpen) {
+        item.classList.add('open');
+        item.querySelector('.faq-question').setAttribute('aria-expanded', 'true');
+      }
     }
+
+    /* ── Close mobile nav on Escape ── */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeMobileNav();
+      }
+    });
   </script>
 
 </body>
