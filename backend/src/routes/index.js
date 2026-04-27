@@ -13,6 +13,8 @@ const forumRoutes = require('./forumRoutes');
 const notifikasiRoutes = require('./notifikasiRoutes');
 const pengaturanRoutes = require('./pengaturanRoutes');
 const dashboardRoutes = require('./dashboardRoutes');
+const paketRoutes = require('./paketRoutes');
+const mataPelajaranRoutes = require('./mataPelajaranRoutes');
 
 const router = express.Router();
 
@@ -36,5 +38,7 @@ router.use('/forum', verifyToken, forumRoutes);
 router.use('/notifikasi', verifyToken, notifikasiRoutes);
 router.use('/pengaturan', verifyToken, pengaturanRoutes);
 router.use('/dashboard', verifyToken, dashboardRoutes);
+router.use('/paket', verifyToken, paketRoutes);
+router.use('/mata-pelajaran', verifyToken, mataPelajaranRoutes);
 
 module.exports = router;
