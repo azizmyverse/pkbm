@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DONGLOT — TikTok Downloader Tanpa Watermark</title>
+  <meta name="description" content="Download video TikTok tanpa watermark secara gratis. Tersedia format HD MP4, SD MP4, dan MP3. Tanpa registrasi, tanpa biaya." />
+  <meta name="keywords" content="tiktok downloader, download tiktok, tanpa watermark, no watermark, tiktok mp4, tiktok mp3, donglot" />
+  <meta name="author" content="DONGLOT" />
+  <meta name="theme-color" content="#c8a86e" />
+  <meta property="og:title" content="DONGLOT — TikTok Downloader Tanpa Watermark" />
+  <meta property="og:description" content="Download video TikTok tanpa watermark. HD, SD, dan MP3. 100% gratis." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="id_ID" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬇️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://www.tikwm.com" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0a0a0a; color: #ffffff;
+      overflow-x: hidden; line-height: 1.6;
+      cursor: default;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ══════════ CUSTOM SCROLLBAR ══════════ */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #c8a86e, #d4b87a);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #d4b87a; }
+
+    /* ══════════ NOISE OVERLAY ══════════ */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ══════════ MOUSE GLOW ══════════ */
+    .mouse-glow {
+      position: fixed; width: 300px; height: 300px;
+      border-radius: 50%; pointer-events: none; z-index: 1;
+      background: radial-gradient(circle, rgba(200,168,110,0.12) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s;
+      opacity: 0;
+    }
+    .mouse-glow.active { opacity: 1; }
+
+    /* ══════════ CONFETTI CANVAS ══════════ */
+    #confettiCanvas {
+      position: fixed; inset: 0; z-index: 10000;
+      pointer-events: none;
+    }
+
+    /* ══════════ SCROLL REVEAL ══════════ */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.revealed {
+      opacity: 1; transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ══════════ NAVBAR ══════════ */
+    .navbar {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,10,10,0.7);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .navbar.scrolled { border-bottom: 1px solid rgba(200,168,110,0.3); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 0.9rem; font-weight: 500; color: #fff;
+      transition: color 0.3s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: #c8a86e; transition: width 0.3s;
+    }
+    .nav-links a:hover { color: #d4b87a; }
+    .nav-links a:hover::after { width: 100%; }
+
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; z-index: 1001; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: #fff; transition: all 0.3s; border-radius: 2px;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    .mobile-nav {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      z-index: 999; flex-direction: column; align-items: center;
+      justify-content: center; gap: 36px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.4rem;
+      font-weight: 600; color: #fff; transition: color 0.3s;
+    }
+    .mobile-nav a:hover { color: #d4b87a; }
+
+    /* ══════════ HERO ══════════ */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      padding: 120px 20px 80px; position: relative; overflow: hidden;
+    }
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(120px); opacity: 0.35;
+      animation: blobMove 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 500px; height: 500px; background: #c8a86e; top: -100px; left: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: #d4b87a; bottom: -50px; right: -100px; animation-delay: -4s; }
+    .blob-3 { width: 300px; height: 300px; background: #e0c88a; top: 40%; left: 50%; animation-delay: -8s; }
+    @keyframes blobMove {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(60px,-40px) scale(1.15); }
+      66%  { transform: translate(-40px,60px) scale(0.9); }
+      100% { transform: translate(30px,30px) scale(1.05); }
+    }
+
+    .particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .particle {
+      position: absolute; width: 3px; height: 3px;
+      background: rgba(200,168,110,0.5); border-radius: 50%;
+      animation: particleFloat linear infinite;
+    }
+    .particle:nth-child(1)  { left:10%;  top:20%;  animation-duration:8s;  }
+    .particle:nth-child(2)  { left:25%;  top:60%;  animation-duration:10s; animation-delay:-2s; }
+    .particle:nth-child(3)  { left:40%;  top:30%;  animation-duration:7s;  animation-delay:-4s; }
+    .particle:nth-child(4)  { left:55%;  top:70%;  animation-duration:9s;  animation-delay:-1s; }
+    .particle:nth-child(5)  { left:70%;  top:15%;  animation-duration:11s; animation-delay:-3s; }
+    .particle:nth-child(6)  { left:85%;  top:50%;  animation-duration:8s;  animation-delay:-5s; }
+    .particle:nth-child(7)  { left:15%;  top:80%;  animation-duration:12s; animation-delay:-6s; }
+    .particle:nth-child(8)  { left:60%;  top:45%;  animation-duration:9s;  animation-delay:-7s; }
+    .particle:nth-child(9)  { left:90%;  top:85%;  animation-duration:10s; animation-delay:-2s; }
+    .particle:nth-child(10) { left:35%;  top:90%;  animation-duration:7s;  animation-delay:-8s; }
+    .particle:nth-child(11) { left:5%;   top:50%;  animation-duration:13s; animation-delay:-9s; }
+    .particle:nth-child(12) { left:75%;  top:35%;  animation-duration:8s;  animation-delay:-3s; }
+    @keyframes particleFloat {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 800px; width: 100%; }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4.5vw, 3.8rem);
+      font-weight: 900; letter-spacing: 3px;
+      background: linear-gradient(135deg, #c8a86e 0%, #d4b87a 50%, #e0c88a 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 20px rgba(200,168,110,0.5));
+      margin-bottom: 12px; line-height: 1.2;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow {
+      0%   { filter: drop-shadow(0 0 20px rgba(200,168,110,0.3)); }
+      100% { filter: drop-shadow(0 0 40px rgba(200,168,110,0.6)); }
+    }
+
+    .hero-subtitle {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-style: italic;
+      color: #c8c0b0; font-size: clamp(0.9rem, 2vw, 1.1rem);
+      margin-bottom: 20px; min-height: 1.8em;
+    }
+    .typewriter-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: #d4b87a; margin-left: 2px;
+      animation: blink 0.8s step-end infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-badge {
+      display: inline-flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      padding: 10px 24px; border-radius: 50px;
+      background: rgba(200,168,110,0.1); border: 1px solid rgba(200,168,110,0.25);
+      font-size: 0.85rem; color: #e0c88a; margin-bottom: 40px;
+    }
+
+    /* ══════════ INPUT ══════════ */
+    .input-group {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 14px; width: 100%; max-width: 720px; margin: 0 auto;
+    }
+    .input-wrapper { position: relative; width: 100%; }
+    .url-input {
+      width: 100%; padding: 18px 90px 18px 24px;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; color: #fff;
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(200,168,110,0.5); border-radius: 16px;
+      outline: none; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s;
+    }
+    .url-input::placeholder { color: #7a7060; }
+    .url-input:focus {
+      border-color: #d4b87a;
+      box-shadow: 0 0 20px rgba(200,168,110,0.4), 0 0 60px rgba(200,168,110,0.1);
+    }
+    .input-btns {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .btn-icon {
+      background: none; border: none; color: #9a9080; font-size: 1.1rem;
+      cursor: pointer; padding: 6px; border-radius: 8px; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-icon:hover { color: #d4b87a; background: rgba(200,168,110,0.1); }
+    .btn-icon.hide { display: none; }
+
+    .error-msg {
+      color: #ef4444; font-size: 0.85rem; min-height: 20px;
+      transition: opacity 0.3s; opacity: 0;
+    }
+    .error-msg.visible { opacity: 1; }
+    .success-msg {
+      color: #22c55e; font-size: 0.85rem; min-height: 20px;
+      transition: opacity 0.3s; opacity: 0;
+    }
+    .success-msg.visible { opacity: 1; }
+
+    .btn-actions { display: flex; gap: 12px; width: 100%; flex-wrap: wrap; justify-content: center; }
+    .btn-download-main {
+      padding: 16px 40px; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.05rem; font-weight: 600; color: #fff;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      border: none; border-radius: 50px; cursor: pointer;
+      transition: all 0.3s; flex: 1; max-width: 400px; min-width: 250px;
+      animation: pulse 2.5s ease-in-out infinite;
+      position: relative; overflow: hidden;
+    }
+    .btn-download-main::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.5s;
+    }
+    .btn-download-main:hover::before { left: 100%; }
+    .btn-download-main:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(200,168,110,0.5);
+      animation: none;
+    }
+    .btn-download-main:active { transform: scale(0.98); }
+    .btn-download-main:disabled {
+      opacity: 0.6; cursor: not-allowed; animation: none; transform: none;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200,168,110,0.4); }
+      50%      { box-shadow: 0 0 20px 6px rgba(200,168,110,0.15); }
+    }
+
+    /* ══════════ PROGRESS BAR ══════════ */
+    .progress-bar-wrap {
+      width: 100%; max-width: 720px; margin: 20px auto 0;
+      display: none; flex-direction: column; gap: 8px;
+    }
+    .progress-bar-wrap.active { display: flex; }
+    .progress-bar-outer {
+      width: 100%; height: 6px; border-radius: 3px;
+      background: rgba(200,168,110,0.15); overflow: hidden;
+    }
+    .progress-bar-inner {
+      height: 100%; width: 0%; border-radius: 3px;
+      background: linear-gradient(90deg, #c8a86e, #d4b87a, #e0c88a);
+      transition: width 0.3s ease;
+      position: relative;
+    }
+    .progress-bar-inner::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: progressShine 1.5s infinite;
+    }
+    @keyframes progressShine {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .progress-text {
+      font-size: 0.8rem; color: #b0a898; text-align: center;
+    }
+
+    /* ══════════ SPINNER ══════════ */
+    .spinner-overlay {
+      display: none; flex-direction: column; align-items: center;
+      gap: 16px; margin-top: 32px;
+    }
+    .spinner-overlay.active { display: flex; }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid rgba(200,168,110,0.2);
+      border-top-color: #c8a86e; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-text { color: #c8c0b0; font-size: 0.9rem; }
+
+    /* ══════════ RESULT CARD ══════════ */
+    .result-card {
+      display: none; max-width: 720px; width: 100%;
+      margin: 40px auto 0;
+      background: rgba(12,12,12,0.95);
+      border: 1px solid rgba(200,168,110,0.4);
+      border-radius: 20px;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      overflow: hidden;
+      position: relative;
+    }
+    .result-card.show { display: block; animation: fadeInUp 0.6s ease forwards; }
+
+    /* Animated gradient border */
+    .result-card::before {
+      content: ''; position: absolute; inset: -1px;
+      border-radius: 21px; z-index: -1;
+      background: conic-gradient(from var(--border-angle, 0deg), #c8a86e, #d4b87a, #e0c88a, #c8a86e);
+      animation: rotateBorder 4s linear infinite;
+    }
+    @property --border-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+    @keyframes rotateBorder {
+      to { --border-angle: 360deg; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-inner { display: flex; gap: 20px; padding: 24px; align-items: flex-start; }
+    .result-thumb {
+      width: 160px; height: 220px; border-radius: 12px;
+      overflow: hidden; flex-shrink: 0;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      position: relative; cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .result-thumb:hover { transform: scale(1.03); }
+    .result-thumb img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 12px;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .result-thumb img.loaded { opacity: 1; }
+    .thumb-skeleton {
+      position: absolute; inset: 0; border-radius: 12px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite;
+    }
+    .thumb-skeleton.hide { display: none; }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .play-overlay {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.4); opacity: 0;
+      transition: opacity 0.3s; border-radius: 12px;
+      font-size: 2.5rem;
+    }
+    .result-thumb:hover .play-overlay { opacity: 1; }
+
+    .result-info { flex: 1; min-width: 0; text-align: left; }
+    .result-title {
+      font-weight: 600; font-size: 1.05rem; margin-bottom: 6px;
+      color: #fff; display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .result-author { color: #d0c8b8; font-size: 0.9rem; margin-bottom: 12px; font-weight: 500; }
+    .result-stats {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 20px; font-size: 0.85rem; color: #d0c8b8; font-weight: 500;
+    }
+    .result-stats span { display: flex; align-items: center; gap: 4px; }
+    .result-buttons { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-result {
+      padding: 12px 20px; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 700; border: none;
+      border-radius: 12px; cursor: pointer; transition: all 0.3s; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .btn-result::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+    .btn-result:hover::before { left: 100%; }
+    .btn-result:hover { transform: scale(1.03); }
+    .btn-result:disabled { opacity: 0.6; cursor: wait; transform: none; }
+    .btn-hd { background: linear-gradient(135deg, #c8a86e, #d4b87a); color: #0a0a0a; }
+    .btn-hd:hover { box-shadow: 0 6px 24px rgba(200,168,110,0.4); }
+    .btn-sd {
+      background: rgba(200,168,110,0.2); color: #fff;
+      border: 1px solid rgba(200,168,110,0.4);
+    }
+    .btn-sd:hover { background: rgba(200,168,110,0.35); }
+    .btn-mp3 {
+      background: rgba(200,168,110,0.12); color: #fff;
+      border: 1px solid rgba(200,168,110,0.3);
+    }
+    .btn-mp3:hover { background: rgba(200,168,110,0.25); }
+    .btn-reset {
+      padding: 12px 20px; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 600; color: #d0c8b8;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; cursor: pointer; transition: all 0.3s; margin-top: 4px;
+    }
+    .btn-reset:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+    /* ══════════ VIDEO MODAL ══════════ */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .modal-overlay.show { display: flex; opacity: 1; }
+    .modal-content {
+      position: relative; max-width: 400px; width: 90%;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(200,168,110,0.4);
+      background: #111;
+    }
+    .modal-content video {
+      width: 100%; max-height: 80vh; display: block;
+      background: #000;
+    }
+    .modal-close {
+      position: absolute; top: 12px; right: 12px;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { background: rgba(200,168,110,0.6); }
+
+    /* ══════════ HISTORY SECTION ══════════ */
+    .history-section {
+      max-width: 720px; width: 100%; margin: 0 auto;
+      padding: 0 20px;
+    }
+    .history-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .history-title {
+      font-family: 'Playfair Display', serif; font-size: 1.2rem;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .history-clear {
+      font-size: 0.8rem; color: #9a9080; background: none; border: none;
+      cursor: pointer; transition: color 0.3s;
+    }
+    .history-clear:hover { color: #ef4444; }
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; background: rgba(17,17,17,0.6);
+      border: 1px solid rgba(200,168,110,0.15); border-radius: 12px;
+      transition: all 0.3s; cursor: pointer;
+    }
+    .history-item:hover {
+      border-color: rgba(200,168,110,0.4);
+      transform: translateX(4px);
+    }
+    .history-thumb {
+      width: 44px; height: 44px; border-radius: 8px;
+      object-fit: cover; flex-shrink: 0;
+    }
+    .history-info { flex: 1; min-width: 0; }
+    .history-info-title {
+      font-size: 0.85rem; font-weight: 500; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .history-info-author { font-size: 0.75rem; color: #9a9080; }
+    .history-time { font-size: 0.7rem; color: #8a8070; white-space: nowrap; }
+
+    /* ══════════ SECTIONS ══════════ */
+    .section { padding: 100px 20px; max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem); text-align: center; margin-bottom: 60px;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* Features with 3D tilt */
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .feature-card {
+      background: rgba(255,255,255,0.04); backdrop-filter: blur(12px);
+      border: 1px solid rgba(200,168,110,0.2); border-radius: 20px;
+      padding: 40px 28px; text-align: center; transition: all 0.4s;
+      transform-style: preserve-3d; perspective: 800px;
+    }
+    .feature-card:hover {
+      border-color: rgba(200,168,110,0.6);
+      box-shadow: 0 12px 40px rgba(200,168,110,0.15);
+    }
+    .feature-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+    .feature-title { font-weight: 700; font-size: 1.15rem; margin-bottom: 10px; }
+    .feature-desc { color: #c8c0b0; font-size: 0.9rem; line-height: 1.5; }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; }
+    .step-card { text-align: center; padding: 32px 20px; }
+    .step-number {
+      font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 900;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1; margin-bottom: 20px;
+    }
+    .step-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
+    .step-desc { color: #c8c0b0; font-size: 0.9rem; }
+
+    .faq-list {
+      max-width: 700px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .faq-item {
+      background: #111; border: 1px solid rgba(200,168,110,0.15);
+      border-radius: 14px; overflow: hidden; transition: border-color 0.3s;
+    }
+    .faq-item:hover { border-color: rgba(200,168,110,0.4); }
+    .faq-question {
+      padding: 20px 24px; font-weight: 600; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      user-select: none; background: none; border: none; color: #fff;
+      width: 100%; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; text-align: left;
+    }
+    .faq-question:focus-visible { outline: 2px solid #d4b87a; outline-offset: -2px; border-radius: 14px; }
+    .faq-question .faq-icon { font-size: 1.2rem; transition: transform 0.3s; }
+    .faq-item.open .faq-question .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: #c8c0b0; font-size: 0.9rem; padding: 0 24px;
+    }
+    .faq-item.open .faq-answer { max-height: 200px; padding: 0 24px 20px; }
+
+    /* ══════════ SCROLL TO TOP ══════════ */
+    .scroll-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 900;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #c8a86e, #d4b87a);
+      color: #fff; border: none; cursor: pointer;
+      font-size: 1.3rem; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: all 0.3s; box-shadow: 0 4px 20px rgba(200,168,110,0.3);
+    }
+    .scroll-top.show { opacity: 1; pointer-events: auto; }
+    .scroll-top:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(200,168,110,0.5); }
+
+    /* ══════════ FOOTER ══════════ */
+    .footer {
+      background: #050505; border-top: 1px solid rgba(200,168,110,0.2);
+      text-align: center; padding: 32px 20px; color: #c8c0b0; font-size: 0.85rem;
+    }
+    .footer span { color: #d4b87a; }
+
+    /* ══════════ TOAST ══════════ */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: rgba(17,17,17,0.95); color: #e0c88a;
+      border: 1px solid rgba(200,168,110,0.3);
+      padding: 12px 28px; border-radius: 14px; font-size: 0.85rem;
+      opacity: 0; pointer-events: none; transition: all 0.4s;
+      z-index: 1100; backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+
+    /* ══════════ RESPONSIVE ══════════ */
+    @media (max-width: 768px) {
+      .navbar { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .features-grid, .steps-grid { grid-template-columns: 1fr; gap: 16px; }
+      .result-inner { flex-direction: column; text-align: center; }
+      .result-thumb { width: 100%; height: 200px; }
+      .result-info { text-align: center; }
+      .result-stats { justify-content: center; }
+      .btn-download-main { max-width: 100%; }
+      .section { padding: 60px 20px; }
+      .hero-badge { gap: 8px; font-size: 0.78rem; padding: 8px 16px; }
+      .mouse-glow { display: none; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 100px 16px 60px; }
+      .url-input { padding: 14px 80px 14px 16px; font-size: 0.9rem; }
+      .btn-download-main { padding: 14px 24px; font-size: 0.95rem; min-width: unset; width: 100%; }
+      .step-number { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mouse Glow -->
+  <div class="mouse-glow" id="mouseGlow"></div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Menu utama">
+    <a href="#hero" class="nav-logo" aria-label="DONGLOT - Kembali ke beranda">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M33.3 11.5A8.3 8.3 0 0 1 27 8.6V4h-5.6v26.2a5.4 5.4 0 0 1-5.4 5 5.4 5.4 0 0 1-5.4-5.4 5.4 5.4 0 0 1 5.4-5.4c.6 0 1.1.1 1.6.2v-5.7A11 11 0 0 0 16 19a11 11 0 0 0-11 11.2A11 11 0 0 0 16 41.2a11 11 0 0 0 11-11V19.4a14 14 0 0 0 8.3 2.7v-5.6a8.3 8.3 0 0 1-2-5z" fill="url(#tg)"/>
+        <defs><linearGradient id="tg" x1="5" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c8a86e"/><stop offset="1" stop-color="#d4b87a"/>
+        </linearGradient></defs>
+      </svg>
+      <span class="nav-logo-text">DONGLOT</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#hero">Beranda</a></li>
+      <li><a href="#cara-pakai">Cara Pakai</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Menu navigasi">
+    <a href="#hero" onclick="closeMobileNav()">Beranda</a>
+    <a href="#cara-pakai" onclick="closeMobileNav()">Cara Pakai</a>
+    <a href="#faq" onclick="closeMobileNav()">FAQ</a>
+  </div>
+
+  <!-- VIDEO PREVIEW MODAL -->
+  <div class="modal-overlay" id="videoModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()" aria-label="Tutup">&times;</button>
+      <video id="modalVideo" controls playsinline></video>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="blob blob-1" aria-hidden="true"></div>
+      <div class="blob blob-2" aria-hidden="true"></div>
+      <div class="blob blob-3" aria-hidden="true"></div>
+      <div class="particles" aria-hidden="true">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">TikTok Downloader Tanpa Watermark</h1>
+        <p class="hero-subtitle" id="heroSubtitle"><span class="typewriter-cursor"></span></p>
+        <div class="hero-badge" aria-label="Fitur utama">
+          <span>✅ Gratis</span>
+          <span>🚫 No Watermark</span>
+          <span>⚡ HD Quality</span>
+        </div>
+
+        <div class="input-group">
+          <div class="input-wrapper">
+            <input type="url" class="url-input" id="urlInput"
+              placeholder="Paste link TikTok kamu di sini..."
+              oninput="onInputChange()"
+              aria-label="Link video TikTok" autocomplete="off" spellcheck="false" />
+            <div class="input-btns">
+              <button class="btn-icon" id="btnPaste" onclick="pasteFromClipboard()" title="Paste dari clipboard" aria-label="Paste dari clipboard">📋</button>
+              <button class="btn-icon hide" id="btnClear" onclick="clearInput()" title="Hapus" aria-label="Hapus input">&times;</button>
+            </div>
+          </div>
+          <p class="error-msg" id="errorMsg" role="alert" aria-live="assertive"></p>
+          <p class="success-msg" id="successMsg" role="status" aria-live="polite"></p>
+
+          <div class="btn-actions">
+            <button class="btn-download-main" id="btnDownload" onclick="handleDownload()">⬇️ DONGLOT SEKARANG</button>
+          </div>
+        </div>
+
+        <div class="spinner-overlay" id="spinnerOverlay" role="status" aria-label="Memproses">
+          <div class="spinner" aria-hidden="true"></div>
+          <span class="spinner-text">Mengambil data video...</span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-wrap" id="progressWrap">
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="progressBar"></div>
+          </div>
+          <span class="progress-text" id="progressText">Mengunduh... 0%</span>
+        </div>
+
+        <div class="result-card" id="resultCard" aria-label="Hasil video">
+          <div class="result-inner">
+            <div class="result-thumb" onclick="previewVideo()">
+              <div class="thumb-skeleton" id="thumbSkeleton"></div>
+              <img id="resultImg" src="" alt="Thumbnail video" onload="onThumbLoad()" />
+              <div class="play-overlay" aria-hidden="true">▶</div>
+            </div>
+            <div class="result-info">
+              <h3 class="result-title" id="resultTitle"></h3>
+              <p class="result-author" id="resultAuthor"></p>
+              <div class="result-stats" id="resultStats" aria-label="Statistik video"></div>
+              <div class="result-buttons">
+                <button class="btn-result btn-hd" id="btnHD" onclick="dlHD()">📥 Download HD (No WM)</button>
+                <button class="btn-result btn-sd" id="btnSD" onclick="dlSD()">📥 Download SD (No WM)</button>
+                <button class="btn-result btn-mp3" id="btnMP3" onclick="dlMP3()">🎵 Download MP3</button>
+                <button class="btn-reset" onclick="resetForm()">🔄 Download Lain</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download History -->
+        <div class="history-section" id="historySection" style="display:none; margin-top:40px;">
+          <div class="history-header">
+            <span class="history-title">📜 Riwayat Download</span>
+            <button class="history-clear" onclick="clearHistory()">Hapus Semua</button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FITUR -->
+    <section class="section" id="fitur">
+      <h2 class="section-title reveal">Kenapa Pilih DONGLOT?</h2>
+      <div class="features-grid">
+        <article class="feature-card reveal reveal-delay-1" onmousemove="tiltCard(event, this)" onmouseleave="resetTilt(this)">
+          <span class="feature-icon" aria-hidden="true">⚡</span>
+          <h3 class="feature-title">Super Cepat</h3>
+          <p class="feature-desc">Unduh dalam hitungan detik. Server kami dioptimalkan untuk kecepatan maksimal.</p>
+        </article>
+        <article class="feature-card reveal reveal-delay-2" onmousemove="tiltCard(event, this)" onmouseleave="resetTilt(this)">
+          <span class="feature-icon" aria-hidden="true">🚫</span>
+          <h3 class="feature-title">Tanpa Watermark</h3>
+          <p class="feature-desc">Video bersih 100% tanpa logo TikTok yang mengganggu.</p>
+        </article>
+        <article class="feature-card reveal reveal-delay-3" onmousemove="tiltCard(event, this)" onmouseleave="resetTilt(this)">
+          <span class="feature-icon" aria-hidden="true">🆓</span>
+          <h3 class="feature-title">Gratis Selamanya</h3>
+          <p class="feature-desc">Tidak perlu registrasi, tidak ada biaya tersembunyi. Selamanya gratis.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- CARA PAKAI -->
+    <section class="section" id="cara-pakai">
+      <h2 class="section-title reveal">Cara Pakai</h2>
+      <div class="steps-grid">
+        <div class="step-card reveal reveal-delay-1">
+          <div class="step-number" aria-hidden="true">1</div>
+          <h3 class="step-title">Copy Link Video</h3>
+          <p class="step-desc">Buka TikTok, temukan video yang ingin diunduh, lalu copy link-nya.</p>
+        </div>
+        <div class="step-card reveal reveal-delay-2">
+          <div class="step-number" aria-hidden="true">2</div>
+          <h3 class="step-title">Paste di Kolom DONGLOT</h3>
+          <p class="step-desc">Tempelkan link TikTok yang sudah dicopy ke kolom input di atas.</p>
+        </div>
+        <div class="step-card reveal reveal-delay-3">
+          <div class="step-number" aria-hidden="true">3</div>
+          <h3 class="step-title">Klik DONGLOT</h3>
+          <p class="step-desc">Tekan tombol DONGLOT SEKARANG dan video terunduh otomatis ke perangkatmu.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <h2 class="section-title reveal">Pertanyaan Umum (FAQ)</h2>
+      <div class="faq-list" role="list">
+        <div class="faq-item reveal" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Apakah gratis? <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Ya, 100% gratis. Tidak ada biaya tersembunyi dan tidak perlu registrasi apapun.</div>
+        </div>
+        <div class="faq-item reveal" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Apakah video benar-benar tanpa watermark? <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Ya, video yang diunduh benar-benar bersih tanpa logo TikTok berkat API khusus yang kami gunakan.</div>
+        </div>
+        <div class="faq-item reveal" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Format apa yang tersedia? <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Tersedia MP4 HD (tanpa watermark), MP4 SD (tanpa watermark), dan MP3 (audio saja).</div>
+        </div>
+        <div class="faq-item reveal" role="listitem">
+          <button class="faq-question" onclick="toggleFaq(this.parentElement)" aria-expanded="false">
+            Bisa unduh video private? <span class="faq-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="faq-answer" role="region">Tidak, hanya video publik yang bisa diunduh. Pastikan video yang ingin diunduh bersifat publik.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="scroll-top" id="scrollTop" onclick="scrollToTop()" aria-label="Kembali ke atas">&uarr;</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="footer">
+    <p>&copy; 2026 <span>DONGLOT</span> &mdash; Dibuat dengan ✨ di Semarang</p>
+  </footer>
+
+  <script>
+    /* ══════════ HELPERS ══════════ */
+    function formatNumber(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      return String(n);
+    }
+    function formatDuration(s) {
+      var m = Math.floor(s / 60);
+      var sec = s % 60;
+      return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(function() { t.classList.remove('show'); }, 2500);
+    }
+
+    /* ══════════ SOUND FEEDBACK ══════════ */
+    function playSuccessSound() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.setValueAtTime(523, ctx.currentTime);
+        o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+        o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+        g.gain.setValueAtTime(0.08, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        o.start(ctx.currentTime);
+        o.stop(ctx.currentTime + 0.5);
+      } catch(e) {}
+    }
+
+    /* ══════════ CONFETTI ══════════ */
+    var confettiCanvas = document.getElementById('confettiCanvas');
+    var confettiCtx = confettiCanvas.getContext('2d');
+    var confettiParts = [];
+    var confettiRunning = false;
+
+    function resizeConfetti() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti() {
+      confettiParts = [];
+      var colors = ['#c8a86e', '#d4b87a', '#e0c88a', '#f0e0c0', '#fff'];
+      for (var i = 0; i < 120; i++) {
+        confettiParts.push({
+          x: Math.random() * confettiCanvas.width,
+          y: -20 - Math.random() * 100,
+          w: 6 + Math.random() * 6,
+          h: 4 + Math.random() * 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vy: 2 + Math.random() * 4,
+          vx: (Math.random() - 0.5) * 4,
+          rot: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 10,
+          opacity: 1
+        });
+      }
+      if (!confettiRunning) {
+        confettiRunning = true;
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      var alive = false;
+      confettiParts.forEach(function(p) {
+        if (p.opacity <= 0) return;
+        alive = true;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.1;
+        p.rot += p.rotSpeed;
+        if (p.y > confettiCanvas.height - 50) p.opacity -= 0.02;
+        confettiCtx.save();
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate(p.rot * Math.PI / 180);
+        confettiCtx.globalAlpha = Math.max(0, p.opacity);
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        confettiCtx.restore();
+      });
+      if (alive) {
+        requestAnimationFrame(animateConfetti);
+      } else {
+        confettiRunning = false;
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      }
+    }
+
+    /* ══════════ TYPEWRITER ══════════ */
+    (function() {
+      var text = 'Paste link TikTokmu \u2192 Download langsung tanpa watermark \uD83D\uDD25';
+      var el = document.getElementById('heroSubtitle');
+      var i = 0;
+      function typeChar() {
+        if (i <= text.length) {
+          el.innerHTML = text.substring(0, i) + '<span class="typewriter-cursor"></span>';
+          i++;
+          setTimeout(typeChar, 50);
+        }
+      }
+      setTimeout(typeChar, 800);
+    })();
+
+    /* ══════════ MOUSE GLOW ══════════ */
+    (function() {
+      var glow = document.getElementById('mouseGlow');
+      var active = false;
+      document.addEventListener('mousemove', function(e) {
+        if (!active) { glow.classList.add('active'); active = true; }
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+      });
+      document.addEventListener('mouseleave', function() {
+        glow.classList.remove('active');
+        active = false;
+      });
+    })();
+
+    /* ══════════ SCROLL REVEAL (Intersection Observer) ══════════ */
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(function(el) {
+        observer.observe(el);
+      });
+    })();
+
+    /* ══════════ 3D TILT EFFECT ══════════ */
+    function tiltCard(e, card) {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var cx = rect.width / 2;
+      var cy = rect.height / 2;
+      var rotY = ((x - cx) / cx) * 8;
+      var rotX = ((cy - y) / cy) * 8;
+      card.style.transform = 'perspective(800px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-6px)';
+    }
+    function resetTilt(card) {
+      card.style.transform = '';
+    }
+
+    /* ══════════ DOWNLOAD WITH PROGRESS ══════════ */
+    async function downloadFile(url, filename) {
+      var progressWrap = document.getElementById('progressWrap');
+      var progressBar = document.getElementById('progressBar');
+      var progressText = document.getElementById('progressText');
+      try {
+        progressWrap.classList.add('active');
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Mengunduh... 0%';
+
+        var response = await fetch(url);
+        if (!response.ok) throw new Error('fetch failed');
+
+        var contentLength = response.headers.get('Content-Length');
+        if (contentLength) {
+          var total = parseInt(contentLength, 10);
+          var loaded = 0;
+          var reader = response.body.getReader();
+          var chunks = [];
+
+          while (true) {
+            var result = await reader.read();
+            if (result.done) break;
+            chunks.push(result.value);
+            loaded += result.value.length;
+            var pct = Math.round((loaded / total) * 100);
+            progressBar.style.width = pct + '%';
+            progressText.textContent = 'Mengunduh... ' + pct + '%';
+          }
+
+          var blob = new Blob(chunks);
+          triggerDownload(blob, filename);
+        } else {
+          // No content-length, simulate progress
+          var fakeProgress = 0;
+          var interval = setInterval(function() {
+            fakeProgress = Math.min(fakeProgress + Math.random() * 15, 90);
+            progressBar.style.width = Math.round(fakeProgress) + '%';
+            progressText.textContent = 'Mengunduh... ' + Math.round(fakeProgress) + '%';
+          }, 200);
+
+          var blob = await response.blob();
+          clearInterval(interval);
+          progressBar.style.width = '100%';
+          progressText.textContent = 'Mengunduh... 100%';
+          triggerDownload(blob, filename);
+        }
+
+        setTimeout(function() { progressWrap.classList.remove('active'); }, 1500);
+        playSuccessSound();
+        launchConfetti();
+        showToast('Download berhasil! 🎉');
+      } catch (e) {
+        progressWrap.classList.remove('active');
+        window.open(url, '_blank');
+        showToast('Membuka di tab baru...');
+      }
+    }
+
+    function triggerDownload(blob, filename) {
+      var blobUrl = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(blobUrl); }, 5000);
+    }
+
+    /* ══════════ STATE ══════════ */
+    var videoData = null;
+    var isProcessing = false;
+
+    /* ══════════ NAVBAR / SCROLL ══════════ */
+    window.addEventListener('scroll', function () {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+      document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 500);
+    });
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function toggleMobileNav() {
+      var nav = document.getElementById('mobileNav');
+      var hamburger = document.getElementById('hamburger');
+      var isOpen = nav.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      hamburger.setAttribute('aria-expanded', isOpen);
+    }
+    function closeMobileNav() {
+      document.getElementById('mobileNav').classList.remove('open');
+      var h = document.getElementById('hamburger');
+      h.classList.remove('active');
+      h.setAttribute('aria-expanded', 'false');
+    }
+
+    /* ══════════ INPUT ══════════ */
+    function onInputChange() {
+      var v = document.getElementById('urlInput').value;
+      document.getElementById('btnClear').classList.toggle('hide', v.length === 0);
+      document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('successMsg').classList.remove('visible');
+    }
+    function clearInput() {
+      document.getElementById('urlInput').value = '';
+      document.getElementById('btnClear').classList.add('hide');
+      document.getElementById('errorMsg').classList.remove('visible');
+      document.getElementById('successMsg').classList.remove('visible');
+      document.getElementById('urlInput').focus();
+    }
+    function resetForm() {
+      clearInput();
+      document.getElementById('resultCard').classList.remove('show');
+      videoData = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function pasteFromClipboard() {
+      try {
+        var text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('urlInput').value = text;
+          onInputChange();
+          showToast('Link berhasil di-paste!');
+          if (isValidUrl(text)) handleDownload();
+        }
+      } catch (e) {
+        showToast('Tidak bisa akses clipboard');
+      }
+    }
+
+    document.getElementById('urlInput').addEventListener('paste', function() {
+      setTimeout(function() {
+        onInputChange();
+        var val = document.getElementById('urlInput').value.trim();
+        if (val && isValidUrl(val)) {
+          var sm = document.getElementById('successMsg');
+          sm.textContent = 'Link TikTok terdeteksi! Tekan Enter atau klik DONGLOT.';
+          sm.classList.add('visible');
+        }
+      }, 100);
+    });
+
+    document.getElementById('urlInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); handleDownload(); }
+    });
+
+    function onThumbLoad() {
+      document.getElementById('resultImg').classList.add('loaded');
+      document.getElementById('thumbSkeleton').classList.add('hide');
+    }
+
+    function isValidUrl(url) {
+      return url.includes('tiktok.com') || url.includes('vm.tiktok.com');
+    }
+
+    /* ══════════ VIDEO PREVIEW MODAL ══════════ */
+    function previewVideo() {
+      if (!videoData) return;
+      var url = videoData.hdplay || videoData.play;
+      if (!url) return;
+      var modal = document.getElementById('videoModal');
+      var video = document.getElementById('modalVideo');
+      video.src = url;
+      modal.classList.add('show');
+      video.play();
+    }
+    function closeModal() {
+      var modal = document.getElementById('videoModal');
+      var video = document.getElementById('modalVideo');
+      video.pause();
+      video.src = '';
+      modal.classList.remove('show');
+    }
+    document.getElementById('videoModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    /* ══════════ DOWNLOAD HISTORY ══════════ */
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem('donglot_history') || '[]'); }
+      catch(e) { return []; }
+    }
+    function saveToHistory(data) {
+      var history = getHistory();
+      var entry = {
+        title: data.title || 'Video TikTok',
+        author: data.author ? data.author.nickname : 'unknown',
+        cover: data.cover || '',
+        time: new Date().toLocaleString('id-ID')
+      };
+      history.unshift(entry);
+      if (history.length > 10) history = history.slice(0, 10);
+      try { localStorage.setItem('donglot_history', JSON.stringify(history)); } catch(e) {}
+      renderHistory();
+    }
+    function renderHistory() {
+      var history = getHistory();
+      var section = document.getElementById('historySection');
+      var list = document.getElementById('historyList');
+      if (history.length === 0) { section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      list.innerHTML = history.map(function(h) {
+        return '<div class="history-item">'
+          + '<img class="history-thumb" src="' + (h.cover || '') + '" alt="" onerror="this.style.display=\'none\'" />'
+          + '<div class="history-info"><div class="history-info-title">' + h.title + '</div>'
+          + '<div class="history-info-author">@' + h.author + '</div></div>'
+          + '<span class="history-time">' + h.time + '</span></div>';
+      }).join('');
+    }
+    function clearHistory() {
+      try { localStorage.removeItem('donglot_history'); } catch(e) {}
+      renderHistory();
+      showToast('Riwayat dihapus');
+    }
+    renderHistory();
+
+    /* ══════════ ANIMATED COUNTER ══════════ */
+    function animateCounter(el, target, suffix) {
+      suffix = suffix || '';
+      var start = 0;
+      var duration = 1000;
+      var startTime = null;
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        var progress = Math.min((timestamp - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = Math.floor(eased * target);
+        el.textContent = formatNumber(current) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = formatNumber(target) + suffix;
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ══════════ MAIN DOWNLOAD HANDLER ══════════ */
+    async function handleDownload() {
+      if (isProcessing) return;
+      var input = document.getElementById('urlInput');
+      var errorMsg = document.getElementById('errorMsg');
+      var successMsg = document.getElementById('successMsg');
+      var spinner = document.getElementById('spinnerOverlay');
+      var resultCard = document.getElementById('resultCard');
+      var btn = document.getElementById('btnDownload');
+      var url = input.value.trim();
+
+      resultCard.classList.remove('show');
+      errorMsg.classList.remove('visible');
+      successMsg.classList.remove('visible');
+
+      if (!url) {
+        errorMsg.textContent = '❌ Masukkan link TikTok terlebih dahulu!';
+        errorMsg.classList.add('visible');
+        input.focus(); return;
+      }
+      if (!isValidUrl(url)) {
+        errorMsg.textContent = '❌ Link tidak valid! Masukkan URL TikTok yang benar.';
+        errorMsg.classList.add('visible');
+        input.focus(); return;
+      }
+
+      isProcessing = true;
+      spinner.classList.add('active');
+      btn.disabled = true;
+      btn.textContent = '⏳ Memproses...';
+
+      document.getElementById('resultImg').classList.remove('loaded');
+      document.getElementById('thumbSkeleton').classList.remove('hide');
+
+      try {
+        var apiUrl = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1';
+        var res = await fetch(apiUrl);
+        var data = await res.json();
+
+        if (data.code === 0 && data.data) {
+          videoData = data.data;
+          document.getElementById('resultImg').src = data.data.cover || '';
+          document.getElementById('resultTitle').textContent = data.data.title || 'Video TikTok';
+          document.getElementById('resultAuthor').textContent = '@' + (data.data.author && data.data.author.nickname ? data.data.author.nickname : 'unknown');
+
+          var statsEl = document.getElementById('resultStats');
+          statsEl.innerHTML = '';
+
+          if (data.data.digg_count !== undefined) {
+            var likeSpan = document.createElement('span');
+            likeSpan.textContent = '❤️ 0';
+            statsEl.appendChild(likeSpan);
+            animateCounter(likeSpan, data.data.digg_count, '');
+            likeSpan.textContent = '❤️ ' + likeSpan.textContent;
+            // Fix prefix
+            (function(sp, val) {
+              var dur = 1000, st = null;
+              function step(ts) {
+                if (!st) st = ts;
+                var p = Math.min((ts - st) / dur, 1);
+                var e = 1 - Math.pow(1 - p, 3);
+                sp.textContent = '❤️ ' + formatNumber(Math.floor(e * val));
+                if (p < 1) requestAnimationFrame(step);
+                else sp.textContent = '❤️ ' + formatNumber(val);
+              }
+              requestAnimationFrame(step);
+            })(likeSpan, data.data.digg_count);
+          }
+          if (data.data.play_count !== undefined) {
+            var playSpan = document.createElement('span');
+            statsEl.appendChild(playSpan);
+            (function(sp, val) {
+              var dur = 1000, st = null;
+              function step(ts) {
+                if (!st) st = ts;
+                var p = Math.min((ts - st) / dur, 1);
+                var e = 1 - Math.pow(1 - p, 3);
+                sp.textContent = '▶️ ' + formatNumber(Math.floor(e * val));
+                if (p < 1) requestAnimationFrame(step);
+                else sp.textContent = '▶️ ' + formatNumber(val);
+              }
+              requestAnimationFrame(step);
+            })(playSpan, data.data.play_count);
+          }
+          if (data.data.duration !== undefined) {
+            var durSpan = document.createElement('span');
+            durSpan.textContent = '⏱️ ' + formatDuration(data.data.duration);
+            statsEl.appendChild(durSpan);
+          }
+
+          spinner.classList.remove('active');
+          resultCard.classList.add('show');
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          saveToHistory(data.data);
+        } else {
+          throw new Error('API error');
+        }
+      } catch (err) {
+        spinner.classList.remove('active');
+        errorMsg.textContent = '❌ Gagal mengambil video. Coba lagi atau gunakan link yang lain.';
+        errorMsg.classList.add('visible');
+      }
+
+      isProcessing = false;
+      btn.disabled = false;
+      btn.textContent = '⬇️ DONGLOT SEKARANG';
+    }
+
+    /* ══════════ DOWNLOAD BUTTONS ══════════ */
+    async function dlHD() {
+      if (!videoData) return;
+      var btn = document.getElementById('btnHD');
+      var orig = btn.textContent;
+      btn.disabled = true; btn.textContent = '⏳ Mengunduh...';
+      await downloadFile(videoData.hdplay || videoData.play, 'donglot_hd.mp4');
+      btn.disabled = false; btn.textContent = orig;
+    }
+    async function dlSD() {
+      if (!videoData) return;
+      var btn = document.getElementById('btnSD');
+      var orig = btn.textContent;
+      btn.disabled = true; btn.textContent = '⏳ Mengunduh...';
+      await downloadFile(videoData.play, 'donglot_sd.mp4');
+      btn.disabled = false; btn.textContent = orig;
+    }
+    async function dlMP3() {
+      if (!videoData) return;
+      var btn = document.getElementById('btnMP3');
+      var orig = btn.textContent;
+      btn.disabled = true; btn.textContent = '⏳ Mengunduh...';
+      await downloadFile(videoData.music, 'donglot_audio.mp3');
+      btn.disabled = false; btn.textContent = orig;
+    }
+
+    /* ══════════ FAQ ══════════ */
+    function toggleFaq(item) {
+      var wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function (el) {
+        el.classList.remove('open');
+        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+      if (!wasOpen) {
+        item.classList.add('open');
+        item.querySelector('.faq-question').setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    /* ══════════ KEYBOARD ══════════ */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeMobileNav();
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
